@@ -73,7 +73,7 @@ const iifeCommonOutputOptions: OutputOptions = {
  */
 let cliCommands: string[] = [];
 try {
-  cliCommands = fs.readdirSync('src/cli') as string[];
+  cliCommands = fs.readdirSync('src/cli');
 } catch {
   cliCommands = [];
 }
