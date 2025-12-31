@@ -4,4 +4,15 @@
  * @packageDocumentation
  */
 
-export { foo, type FooTarget } from './foo';
+/**
+ * Requirements addressed:
+ * - Export a public `AwsSecretsManagerClient`.
+ * - Export the get-dotenv `secretsPlugin` for mounting under `aws`.
+ */
+
+export {
+  AwsSecretsManagerClient,
+  type AwsSecretsManagerClientOptions,
+} from './secretsManager/AwsSecretsManagerClient';
+export type { EnvSecretMap } from './secretsManager/envSecretMap';
+export { secretsPlugin } from './secretsPlugin/secretsPlugin';

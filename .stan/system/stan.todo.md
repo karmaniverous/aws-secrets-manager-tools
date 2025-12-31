@@ -2,23 +2,11 @@
 
 ## Next up
 
-- Add `AwsSecretsManagerClient` (public API) with:
-  - JSON env-map secret semantics
-  - region sourced from get-dotenv aws plugin context (adapter-level wiring)
-  - optional X-Ray capture guarded by `AWS_XRAY_DAEMON_ADDRESS`
-- Implement get-dotenv plugin `secrets` mounted under `aws`:
-  - `aws secrets pull|push|delete` (no aliases)
-  - use get-dotenv precedence (“winner path”) for dotenv editing
-  - safer delete defaults; require `--force` for no-recovery delete
-  - include/exclude ignore unknown keys; use `radash` pick/omit
-- Replace sample CLI with get-dotenv CLI alias `aws-secrets-manager-tools`:
-  - duplicate default get-dotenv CLI composition
-  - omit awsWhoamiPlugin
-  - mount secrets plugin under aws (`awsPlugin().use(secretsPlugin())`)
-- Add tests for:
-  - JSON map validation and error handling in `AwsSecretsManagerClient`
-  - command option mapping + precedence selection behavior in the secrets plugin
+- Run `npm run lint`, `npm run test`, `npm run typecheck`, `npm run build` and fix any issues.
+- Consider changing `aws-xray-sdk` from a hard dependency to an optional peer dependency (keeps installs lighter for most users).
+- Update README with actual CLI usage examples once the CLI is verified end-to-end.
 
 ## Completed (recent)
 
 - Added get-dotenv interop note and formalized requirements + plan (documentation-only).
+- Implemented AwsSecretsManagerClient, aws secrets plugin, and get-dotenv CLI.

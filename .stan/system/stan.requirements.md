@@ -18,7 +18,7 @@ When updated: 2025-12-31T00:00:00Z
 
 - `aws secrets` behavior:
   - Secret values are always a JSON object map of env vars (`Record<string, string | undefined>`).
-  - Secret name expansion (e.g. `$STACK_NAME`) expands against `{ ...process.env, ...ctx.dotenv }` (process.env wins).
+  - Secret name expansion (e.g. `$STACK_NAME`) expands against `{ ...process.env, ...ctx.dotenv }` (ctx wins).
   - Dotenv file editing uses get-dotenv precedence semantics (“winner path”), not “write all paths”.
     - Prefer `editDotenvFile(...)` target selection behavior (last path wins unless configured otherwise).
   - `delete` defaults to recoverable deletion.
