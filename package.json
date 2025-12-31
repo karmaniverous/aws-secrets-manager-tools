@@ -13,7 +13,11 @@
     "url": "https://github.com/karmaniverous/aws-secrets-mnager-tools/issues"
   },
   "dependencies": {
-    "commander": "^14.0.2"
+    "@aws-sdk/client-secrets-manager": "^3.958.0",
+    "@karmaniverous/get-dotenv": "^6.3.0",
+    "aws-xray-sdk": "^3.12.0",
+    "commander": "^14.0.2",
+    "radash": "^12.1.1"
   },
   "description": "A feature-rich NPM package template for TypeScript projects.",
   "devDependencies": {
