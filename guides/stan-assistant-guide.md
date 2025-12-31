@@ -37,13 +37,11 @@ The client assumes secrets are stored as a JSON object map of env vars.
 
 X-Ray capture is optional and guarded:
 
-- Default behavior is “auto”: capture is only enabled when
-  `AWS_XRAY_DAEMON_ADDRESS` is set.
+- Default behavior is “auto”: capture is only enabled when `AWS_XRAY_DAEMON_ADDRESS` is set.
 
 ## CLI usage
 
-The CLI is a get-dotenv CLI with shipped plugins and `aws secrets` mounted
-under `aws`:
+The CLI is a get-dotenv CLI with shipped plugins and `aws secrets` mounted under `aws`:
 
 ```bash
 aws-secrets-manager-tools aws secrets pull --env dev --secret-name '$STACK_NAME'
@@ -53,7 +51,5 @@ aws-secrets-manager-tools aws secrets delete --env dev --secret-name '$STACK_NAM
 
 Notes:
 
-- Secret name expansion is evaluated at action-time against:
-  `{ ...process.env, ...ctx.dotenv }` (ctx wins).
+- Secret name expansion is evaluated at action-time against: `{ ...process.env, ...ctx.dotenv }` (ctx wins).
 - `delete` is recoverable by default; pass `--force` to delete without recovery.
-```

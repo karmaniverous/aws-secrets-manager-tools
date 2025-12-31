@@ -147,8 +147,6 @@ export class AwsSecretsManagerClient {
     versionId?: string;
   }): Promise<void> {
     if (!secretId) throw new Error('secretId is required');
-    if (!value || typeof value !== 'object')
-      throw new Error('value is required');
 
     this.#logger.debug(`Putting secret value...`, { secretId, versionId });
     await this.#client.send(
@@ -174,8 +172,6 @@ export class AwsSecretsManagerClient {
     versionId?: string;
   }): Promise<void> {
     if (!name) throw new Error('name is required');
-    if (!value || typeof value !== 'object')
-      throw new Error('value is required');
 
     this.#logger.debug(`Creating secret...`, { name, versionId });
     await this.#client.send(

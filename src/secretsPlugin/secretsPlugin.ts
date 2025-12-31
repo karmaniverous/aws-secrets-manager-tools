@@ -87,7 +87,7 @@ export const secretsPlugin = () =>
               (bag.privateToken as string | undefined) ?? 'local';
 
             const envRef = buildExpansionEnv(ctx.dotenv);
-            const secretId = expandSecretName(String(opts.secretName), envRef);
+            const secretId = expandSecretName(opts.secretName, envRef);
             if (!secretId) throw new Error('secret-name is required.');
 
             const region = ctx.plugins?.aws?.region;
@@ -160,7 +160,7 @@ export const secretsPlugin = () =>
               (bag.privateToken as string | undefined) ?? 'local';
 
             const envRef = buildExpansionEnv(ctx.dotenv);
-            const secretId = expandSecretName(String(opts.secretName), envRef);
+            const secretId = expandSecretName(opts.secretName, envRef);
             if (!secretId) throw new Error('secret-name is required.');
 
             // Compose local secrets from the private env file only:
@@ -214,20 +214,16 @@ export const secretsPlugin = () =>
         )
         .option('--force', 'force delete without recovery (DANGEROUS)', false)
         .action(
-          async (
-            opts: {
-              secretName: string;
-              recoveryWindowDays?: string;
-              force: boolean;
-            },
-            command,
-          ) => {
+          async (opts: {
+            secretName: string;
+            recoveryWindowDays?: string;
+            force: boolean;
+          }) => {
             const logger = console;
             const ctx = cli.getCtx() as AwsCtx;
-            const bag = readMergedOptions(command) as Record<string, unknown>;
 
             const envRef = buildExpansionEnv(ctx.dotenv);
-            const secretId = expandSecretName(String(opts.secretName), envRef);
+            const secretId = expandSecretName(opts.secretName, envRef);
             if (!secretId) throw new Error('secret-name is required.');
 
             const recoveryWindowInDays = toNumber(opts.recoveryWindowDays);
