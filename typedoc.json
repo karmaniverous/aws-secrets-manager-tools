@@ -15,9 +15,9 @@
     "yaml",
     "yml"
   ],
-  "hostedBaseUrl": "https://docs.karmanivero.us/aws-secrets-mnager-tools",
+  "hostedBaseUrl": "https://docs.karmanivero.us/aws-secrets-manager-tools",
   "navigationLinks": {
-    "GitHub": "https://github.com/karmaniverous/aws-secrets-mnager-tools"
+    "GitHub": "https://github.com/karmaniverous/aws-secrets-manager-tools"
   },
   "out": "./docs/",
   "plugin": ["typedoc-plugin-mdn-links", "typedoc-plugin-replace-text"],

@@ -9,4 +9,4 @@
 ## Completed (recent)
 
 - Added get-dotenv interop note and formalized requirements + plan (documentation-only).
-- Implemented AwsSecretsManagerClient, aws secrets plugin, and get-dotenv CLI.- Fixed lint errors and prevented Vitest from running stale .rollup.cache tests.
+- Implemented AwsSecretsManagerClient, aws secrets plugin, and get-dotenv CLI.- Fixed lint errors and prevented Vitest from running stale .rollup.cache tests.- Fixed remaining typecheck + lint issues (mock Promise returns; EnvSecretMap cast).

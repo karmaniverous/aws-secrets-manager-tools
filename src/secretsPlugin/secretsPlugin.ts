@@ -18,7 +18,6 @@ import {
 } from '@karmaniverous/get-dotenv/cliHost';
 
 import { AwsSecretsManagerClient } from '../secretsManager/AwsSecretsManagerClient';
-import type { EnvSecretMap } from '../secretsManager/envSecretMap';
 import {
   applyIncludeExclude,
   buildExpansionEnv,

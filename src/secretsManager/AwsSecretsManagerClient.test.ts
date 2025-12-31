@@ -5,9 +5,11 @@ import { AwsSecretsManagerClient } from './AwsSecretsManagerClient';
 describe('AwsSecretsManagerClient', () => {
   it('parses a JSON object env map (null -> undefined)', async () => {
     const client = {
-      send: vi.fn(() => ({
-        SecretString: JSON.stringify({ A: '1', B: null }),
-      })),
+      send: vi.fn(() =>
+        Promise.resolve({
+          SecretString: JSON.stringify({ A: '1', B: null }),
+        }),
+      ),
     };
 
     const sm = new AwsSecretsManagerClient({ client, xray: 'off' });
@@ -19,7 +21,7 @@ describe('AwsSecretsManagerClient', () => {
 
   it('rejects non-JSON secrets', async () => {
     const client = {
-      send: vi.fn(() => ({ SecretString: 'not-json' })),
+      send: vi.fn(() => Promise.resolve({ SecretString: 'not-json' })),
     };
 
     const sm = new AwsSecretsManagerClient({ client, xray: 'off' });
@@ -30,7 +32,9 @@ describe('AwsSecretsManagerClient', () => {
 
   it('rejects non-object JSON secrets', async () => {
     const client = {
-      send: vi.fn(() => ({ SecretString: JSON.stringify(['nope']) })),
+      send: vi.fn(() =>
+        Promise.resolve({ SecretString: JSON.stringify(['nope']) }),
+      ),
     };
 
     const sm = new AwsSecretsManagerClient({ client, xray: 'off' });
@@ -41,7 +45,9 @@ describe('AwsSecretsManagerClient', () => {
 
   it('rejects non-string values', async () => {
     const client = {
-      send: vi.fn(() => ({ SecretString: JSON.stringify({ A: 123 }) })),
+      send: vi.fn(() =>
+        Promise.resolve({ SecretString: JSON.stringify({ A: 123 }) }),
+      ),
     };
 
     const sm = new AwsSecretsManagerClient({ client, xray: 'off' });

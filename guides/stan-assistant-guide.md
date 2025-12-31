@@ -1,8 +1,8 @@
 ---
-title: STAN assistant guide (aws-secrets-mnager-tools)
+title: STAN assistant guide (aws-secrets-manager-tools)
 ---
 
-# STAN assistant guide: @karmaniverous/aws-secrets-mnager-tools
+# STAN assistant guide: @karmaniverous/aws-secrets-manager-tools
 
 This guide explains the public API and CLI surface for this repo.
 
@@ -22,7 +22,7 @@ import {
   AwsSecretsManagerClient,
   secretsPlugin,
   type EnvSecretMap,
-} from '@karmaniverous/aws-secrets-mnager-tools';
+} from '@karmaniverous/aws-secrets-manager-tools';
 ```
 
 ### AwsSecretsManagerClient
