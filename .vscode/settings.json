@@ -3,12 +3,12 @@
     "editor.wordWrap": "bounded"
   },
   "diffEditor.ignoreTrimWhitespace": false,
-  "editor.defaultFormatter": "esbenp.prettier-vscode",
-  "editor.formatOnPaste": true,
-  "editor.formatOnSave": true,
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": "explicit"
   },
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnPaste": true,
+  "editor.formatOnSave": true,
   "eslint.useFlatConfig": true,
   "eslint.validate": [
     "javascript",
@@ -21,12 +21,6 @@
   "git.enableSmartCommit": true,
   "javascript.preferences.importModuleSpecifierEnding": "minimal",
   "javascript.updateImportsOnFileMove.enabled": "always",
-  "plantuml.diagramsRoot": "diagrams/src",
-  "plantuml.exportFormat": "",
-  "plantuml.exportIncludeFolderHeirarchy": true,
-  "plantuml.exportOutDir": "diagrams/out",
-  "plantuml.exportSubFolder": false,
-  "plantuml.render": "Local",
   "prettier.prettierPath": "./node_modules/prettier",
   "prettier.singleQuote": true,
   "todo-tree.filtering.ignoreGitSubmodules": false,
@@ -67,5 +61,7 @@
   "todo-tree.tree.groupedByTag": true,
   "todo-tree.tree.hideIconsWhenGroupedByTag": true,
   "todo-tree.tree.labelFormat": "${tag} ${after}",
-  "todo-tree.tree.showCountsInTree": true
+  "todo-tree.tree.showCountsInTree": true,
+  "typescript.tsdk": "node_modules\\typescript\\lib",
+  "yaml.format.singleQuote": true
 }

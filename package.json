@@ -10,7 +10,7 @@
     "hideCredit": true
   },
   "bugs": {
-    "url": "https://github.com/karmaniverous/npm-package-template-ts/issues"
+    "url": "https://github.com/karmaniverous/aws-secrets-mnager-tools/issues"
   },
   "dependencies": {
     "commander": "^14.0.2"
@@ -72,7 +72,7 @@
   "files": [
     "dist"
   ],
-  "homepage": "https://github.com/karmaniverous/npm-package-template-ts#readme",
+  "homepage": "https://github.com/karmaniverous/aws-secrets-mnager-tools#readme",
   "keywords": [
     "eslint",
     "lefthook",
@@ -86,7 +86,7 @@
   "license": "BSD-3-Clause",
   "main": "dist/cjs/index.js",
   "module": "dist/mjs/index.js",
-  "name": "@karmaniverous/npm-package-template-ts",
+  "name": "@karmaniverous/aws-secrets-mnager-tools",
   "publishConfig": {
     "access": "public"
   },
@@ -123,12 +123,11 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/karmaniverous/npm-package-template-ts.git"
+    "url": "git+https://github.com/karmaniverous/aws-secrets-mnager-tools.git"
   },
   "scripts": {
     "build": "rimraf dist && cross-env NO_COLOR=1 rollup --config rollup.config.ts --configPlugin @rollup/plugin-typescript",
     "changelog": "auto-changelog",
-    "diagrams": "cd diagrams/src && plantuml -tpng -o ../out -r .",
     "docs": "typedoc",
     "knip": "knip",
     "lint": "eslint .",

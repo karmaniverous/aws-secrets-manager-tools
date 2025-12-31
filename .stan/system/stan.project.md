@@ -1,34 +1,16 @@
-# Project Requirements (npm-package-template-ts)
+# Project Prompt (stan.project.md)
 
-When updated: 2025-08-29T18:15:00Z
+When updated: 2025-12-31T00:00:00Z
 
-Bundling (Rollup)
-- Library outputs:
-  - ESM at dist/mjs/index.js
-  - CJS at dist/cjs/index.js
-  - Types bundled at dist/index.d.ts
-- Additional outputs:
-  - Browser IIFE at dist/index.iife.js (and a minified variant)
-  - CLI commands built from src/cli/<command>/index.ts into dist/cli/<command>/index.js
-    with a shebang banner (#!/usr/bin/env node).
-- Externalization:
-  - Treat Node built-ins and all runtime dependencies/peerDependencies as external.
-- Plugins:
-  - Keep the library build minimal (TypeScript for transpile; rollup-plugin-dts for types).
-  - IIFE/CLI builds may use commonjs/json/node-resolve where helpful.
-- Rollup config contract:
-  - rollup.config.ts MUST export:
-    • buildLibrary(dest): RollupOptions
-    • buildTypes(dest): RollupOptions
-  - stan.rollup.config.ts consumes these for the STAN dev build.
+This file is for repo-specific assistant behavior and implementation policies. Durable functional and build requirements live in `.stan/system/stan.requirements.md`.
 
-ESLint
+Project policies:
 
-- Use a TypeScript flat config at eslint.config.ts.
-- Lint uses @typescript-eslint strictTypeChecked config, Prettier alignment,
-  simple-import-sort, and tsdoc syntax checks.
-- Exclude STAN dev build artifacts from lint: ignore ".stan/**/*".
+- Prefer get-dotenv’s services-first architecture:
+  - thin CLI/plugin adapters
+  - core logic in services behind ports (testable without AWS/FS/process)
+- Use `radash` instead of `lodash`.
+- Optional AWS X-Ray support must be guarded:
+  - do not import or enable X-Ray capture unless `AWS_XRAY_DAEMON_ADDRESS` is set (X-Ray SDK will throw otherwise).
 
-TypeScript configs
-
-- No separate tsconfig.rollup.json is required at this time; the Rollup TypeScript plugin overrides conflicting compiler options for bundling (noEmit=false, declaration=false, etc.).
+If project requirements change, update `.stan/system/stan.requirements.md` and `.stan/system/stan.todo.md` together.

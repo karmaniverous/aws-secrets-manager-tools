@@ -3,6 +3,17 @@ stan-core:
   excludes:
     - docs
     - package-lock.json
+  imports:
+    '@karmaniverous/get-dotenv':
+      - ../get-dotenv/.stan/interop/aws-secrets-manager-tools/**
+      - ../get-dotenv/guides/stan-assistant-guide.md
+    '@veterancrowd/aws-cli':
+      - ../../VeteranCrowd/aws-cli/lib/aws/deleteSecret.js
+      - ../../VeteranCrowd/aws-cli/lib/aws/pullSecret.js
+      - ../../VeteranCrowd/aws-cli/lib/aws/pushSecret.js
+    '@veterancrowd/wrapped-secrets-manager-client':
+      - ../../VeteranCrowd/wrapped-secrets-manager-client/lib/WrappedSecretsManagerClient.js
+  includes: []
 stan-cli:
   cliDefaults:
     run:
@@ -16,7 +27,6 @@ stan-cli:
       script: npm run lint:fix
       warnPattern: \\d+:\\d+\\s+warning
     test: npm run test -- --no-color
-    diagrams: npm run diagrams
     docs:
       script: npm run docs -- --emit none
       warnPattern: \\[warning\\]
