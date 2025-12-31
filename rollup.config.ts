@@ -65,8 +65,18 @@ const iifeCommonOutputOptions: OutputOptions = {
   name: packageName ?? 'unknown',
 };
 
-/** Discover CLI commands under src/cli. */
-const cliCommands = (await fs.readdir('src/cli').catch(() => [])) as string[];
+/**
+ * Discover CLI commands under src/cli.
+ *
+ * Keep this synchronous so Rollup can load a TS config via `--configPlugin`
+ * without relying on top-level await semantics in the transpiled output.
+ */
+let cliCommands: string[] = [];
+try {
+  cliCommands = fs.readdirSync('src/cli') as string[];
+} catch {
+  cliCommands = [];
+}
 
 /**
  * Build the library (ESM + CJS).

@@ -8,4 +8,10 @@
 ## Completed (recent)
 
 - Added get-dotenv interop note and formalized requirements + plan (documentation-only).
-- Implemented AwsSecretsManagerClient, aws secrets plugin, and get-dotenv CLI.- Fixed lint errors and prevented Vitest from running stale .rollup.cache tests.- Fixed remaining typecheck + lint issues (mock Promise returns; EnvSecretMap cast).- Changed aws-xray-sdk to optional peer dependency.
+- Implemented AwsSecretsManagerClient, aws secrets plugin, and get-dotenv CLI.
+- Fixed lint errors and prevented Vitest from running stale .rollup.cache tests.
+- Fixed remaining typecheck + lint issues (mock Promise returns; EnvSecretMap cast).
+- Changed aws-xray-sdk to optional peer dependency.
+- Fixed build script to load `rollup.config.ts` (no missing `rollup.config.mjs`).
+- Removed TypeDoc warnings by documenting public API surfaces.
+- Suppressed Knip warning for intentionally optional `aws-xray-sdk` peer.

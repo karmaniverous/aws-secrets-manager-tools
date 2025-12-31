@@ -4,6 +4,7 @@
  * - Secrets are JSON object maps of env vars.
  * - Optional X-Ray capture, default “auto”, guarded by AWS_XRAY_DAEMON_ADDRESS.
  * - Region is supplied by the caller (wired from aws plugin context).
+ * - Public API is documented enough to satisfy TypeDoc `notDocumented` validation.
  */
 
 import {
@@ -24,14 +25,23 @@ type AwsSdkV3ClientLike = {
 };
 
 export type AwsSecretsManagerClientOptions = {
-  logger?: Logger;
+  /** Logger instance (must implement info/error/debug). Defaults to `console`. */
+  logger?: Pick<Console, 'debug' | 'error' | 'info'>;
+  /** AWS region (passed to the AWS SDK v3 Secrets Manager client). */
   region?: string;
-  xray?: XrayMode;
+  /**
+   * AWS X-Ray capture mode.
+   *
+   * - `auto` (default): enable only when `AWS_XRAY_DAEMON_ADDRESS` is set.
+   * - `on`: force enable (will throw if daemon address is missing).
+   * - `off`: disable.
+   */
+  xray?: 'auto' | 'on' | 'off';
   /**
    * Injection seam for tests and advanced consumers. If provided, region/xray
    * options are ignored.
    */
-  client?: AwsSdkV3ClientLike;
+  client?: { send: (cmd: unknown) => Promise<unknown> };
 };
 
 const assertLogger = (logger: Logger) => {
@@ -73,6 +83,12 @@ const parseEnvSecretMap = (secretString: string): EnvSecretMap => {
 
 const toSecretString = (value: EnvSecretMap): string => JSON.stringify(value);
 
+/**
+ * AWS Secrets Manager wrapper for env-map secrets.
+ *
+ * The secret payload is always a JSON object map of environment variables:
+ * `Record<string, string | undefined>`.
+ */
 export class AwsSecretsManagerClient {
   readonly #logger: Logger;
   readonly #client: AwsSdkV3ClientLike;
@@ -103,7 +119,7 @@ export class AwsSecretsManagerClient {
     this.#client = {
       send: async (cmd: unknown) => {
         const c = await captureAwsSdkV3Client(base, {
-          mode: xray,
+          mode: xray as XrayMode,
           logger: this.#logger,
         });
         return (c as unknown as AwsSdkV3ClientLike).send(cmd);
@@ -111,6 +127,11 @@ export class AwsSecretsManagerClient {
     };
   }
 
+  /**
+   * Read a Secrets Manager secret and parse it as an env-map.
+   *
+   * @throws If the secret is missing, binary, invalid JSON, or not an object map.
+   */
   async getEnvSecret({
     secretId,
     versionId,
@@ -137,6 +158,11 @@ export class AwsSecretsManagerClient {
     return parseEnvSecretMap(res.SecretString);
   }
 
+  /**
+   * Write a new version value for an existing secret.
+   *
+   * This does not create the secret if it does not exist.
+   */
   async putEnvSecret({
     secretId,
     value,
@@ -158,6 +184,11 @@ export class AwsSecretsManagerClient {
     );
   }
 
+  /**
+   * Create a new secret containing an env-map.
+   *
+   * @param name Secret name (or ARN in some contexts).
+   */
   async createEnvSecret({
     name,
     value,
@@ -187,6 +218,12 @@ export class AwsSecretsManagerClient {
     );
   }
 
+  /**
+   * Put a secret value, creating the secret only when it does not exist.
+   *
+   * @returns `'put'` if updated; `'created'` if the secret was created.
+   * @throws Re-throws any non-ResourceNotFound AWS errors.
+   */
   async putOrCreateEnvSecret({
     secretId,
     value,
@@ -204,6 +241,12 @@ export class AwsSecretsManagerClient {
     }
   }
 
+  /**
+   * Delete a secret.
+   *
+   * By default, deletion is recoverable (AWS default recovery window) unless
+   * `forceDeleteWithoutRecovery` is set.
+   */
   async deleteSecret({
     secretId,
     recoveryWindowInDays,

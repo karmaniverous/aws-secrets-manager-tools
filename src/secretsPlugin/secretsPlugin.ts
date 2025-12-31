@@ -45,6 +45,11 @@ const toNumber = (v: unknown): number | undefined => {
   return;
 };
 
+/**
+ * get-dotenv plugin that provides `aws secrets pull|push|delete`.
+ *
+ * Intended usage: mount under `awsPlugin().use(secretsPlugin())`.
+ */
 export const secretsPlugin = () =>
   definePlugin({
     ns: 'secrets',
