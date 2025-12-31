@@ -38,6 +38,7 @@ The client assumes secrets are stored as a JSON object map of env vars.
 X-Ray capture is optional and guarded:
 
 - Default behavior is “auto”: capture is only enabled when `AWS_XRAY_DAEMON_ADDRESS` is set.
+- To enable capture, install the optional peer dependency: `aws-xray-sdk`.
 
 ## CLI usage
 
