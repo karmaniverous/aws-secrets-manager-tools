@@ -22,3 +22,4 @@
 - Reworked public xray/logger types to avoid TypeDoc warnings.
 - Verified TypeDoc runs clean (no warnings).
 - Performed full documentation pass (README + TypeDoc).
+- Fixed TypeDoc @param warnings for opts destructuring.

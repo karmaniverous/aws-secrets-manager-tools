@@ -221,18 +221,17 @@ export class AwsSecretsManagerTools {
   /**
    * Read a Secrets Manager secret and parse it as an env-map secret.
    *
-   * @param secretId - Secret name or ARN.
-   * @param versionId - Optional version id to read.
+   * @param opts - Options:
+   *   - `secretId`: Secret name or ARN.
+   *   - `versionId`: Optional version id to read.
    *
    * @throws If the secret is missing, binary, invalid JSON, or not an object map.
    */
-  async readEnvSecret({
-    secretId,
-    versionId,
-  }: {
+  async readEnvSecret(opts: {
     secretId: string;
     versionId?: string;
   }): Promise<EnvSecretMap> {
+    const { secretId, versionId } = opts;
     if (!secretId) throw new Error('secretId is required');
 
     this.logger.debug(`Getting secret value...`, { secretId, versionId });
@@ -257,19 +256,17 @@ export class AwsSecretsManagerTools {
    *
    * This does not create the secret if it does not exist.
    *
-   * @param secretId - Secret name or ARN.
-   * @param value - Env-map payload to store (JSON object map).
-   * @param versionId - Optional client request token (idempotency).
+   * @param opts - Options:
+   *   - `secretId`: Secret name or ARN.
+   *   - `value`: Env-map payload to store (JSON object map).
+   *   - `versionId`: Optional client request token (idempotency).
    */
-  async updateEnvSecret({
-    secretId,
-    value,
-    versionId,
-  }: {
+  async updateEnvSecret(opts: {
     secretId: string;
     value: EnvSecretMap;
     versionId?: string;
   }): Promise<void> {
+    const { secretId, value, versionId } = opts;
     if (!secretId) throw new Error('secretId is required');
 
     this.logger.debug(`Putting secret value...`, { secretId, versionId });
@@ -285,25 +282,27 @@ export class AwsSecretsManagerTools {
   /**
    * Create a new secret containing an env-map.
    *
-   * @param secretId - Secret name (or ARN in some contexts).
-   * @param value - Env-map payload to store (JSON object map).
-   * @param description - Optional AWS secret description.
-   * @param forceOverwriteReplicaSecret - See AWS CreateSecret behavior for replicas.
-   * @param versionId - Optional client request token (idempotency).
+   * @param opts - Options:
+   *   - `secretId`: Secret name (or ARN in some contexts).
+   *   - `value`: Env-map payload to store (JSON object map).
+   *   - `description`: Optional AWS secret description.
+   *   - `forceOverwriteReplicaSecret`: See AWS CreateSecret behavior for replicas.
+   *   - `versionId`: Optional client request token (idempotency).
    */
-  async createEnvSecret({
-    secretId,
-    value,
-    description,
-    forceOverwriteReplicaSecret,
-    versionId,
-  }: {
+  async createEnvSecret(opts: {
     secretId: string;
     value: EnvSecretMap;
     description?: string;
     forceOverwriteReplicaSecret?: boolean;
     versionId?: string;
   }): Promise<void> {
+    const {
+      secretId,
+      value,
+      description,
+      forceOverwriteReplicaSecret,
+      versionId,
+    } = opts;
     if (!secretId) throw new Error('secretId is required');
 
     this.logger.debug(`Creating secret...`, { secretId, versionId });
@@ -352,21 +351,19 @@ export class AwsSecretsManagerTools {
    * By default, deletion is recoverable (AWS default recovery window) unless
    * `forceDeleteWithoutRecovery` is set.
    *
-   * @param secretId - Secret name or ARN.
-   * @param recoveryWindowInDays - Explicit recovery window to use.
-   * @param forceDeleteWithoutRecovery - Dangerous: delete without recovery.
+   * @param opts - Options:
+   *   - `secretId`: Secret name or ARN.
+   *   - `recoveryWindowInDays`: Explicit recovery window to use.
+   *   - `forceDeleteWithoutRecovery`: Dangerous: delete without recovery.
    *
    * @throws If both `recoveryWindowInDays` and `forceDeleteWithoutRecovery` are provided.
    */
-  async deleteSecret({
-    secretId,
-    recoveryWindowInDays,
-    forceDeleteWithoutRecovery,
-  }: {
+  async deleteSecret(opts: {
     secretId: string;
     recoveryWindowInDays?: number;
     forceDeleteWithoutRecovery?: boolean;
   }): Promise<void> {
+    const { secretId, recoveryWindowInDays, forceDeleteWithoutRecovery } = opts;
     if (!secretId) throw new Error('secretId is required');
     if (
       typeof recoveryWindowInDays !== 'undefined' &&
