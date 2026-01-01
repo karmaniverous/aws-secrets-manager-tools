@@ -130,11 +130,23 @@ const toSecretString = (value: EnvSecretMap): string => JSON.stringify(value);
  *
  * The secret payload is always a JSON object map of environment variables:
  * `Record<string, string | undefined>`.
+ *
+ * Consumers should typically use the convenience methods on this class, and
+ * use {@link AwsSecretsManagerTools.client} as an escape hatch when they need
+ * AWS SDK operations not wrapped here.
  */
 export class AwsSecretsManagerTools {
-  /** The effective SDK client (captured when X-Ray is enabled). */
+  /**
+   * The effective SDK client (captured when X-Ray is enabled).
+   *
+   * Import AWS SDK `*Command` classes as needed and call `tools.client.send(...)`.
+   */
   public readonly client: SecretsManagerClient;
-  /** The effective client config used to construct the base client. */
+  /**
+   * The effective client config used to construct the base client.
+   *
+   * Note: this may contain functions/providers (e.g., credential providers).
+   */
   public readonly clientConfig: SecretsManagerClientConfig;
   /** The logger used by this wrapper and (when applicable) by the AWS client. */
   public readonly logger: AwsSecretsManagerToolsLogger;
@@ -163,6 +175,12 @@ export class AwsSecretsManagerTools {
    *
    * This factory owns all setup (including optional X-Ray capture) so consumers
    * do not need to construct a base Secrets Manager client themselves.
+   *
+   * @throws If `clientConfig.logger` is provided but does not implement
+   * `debug`, `info`, `warn`, and `error`.
+   * @throws If X-Ray capture is enabled (via `xray: 'on'` or `xray: 'auto'`
+   * with `AWS_XRAY_DAEMON_ADDRESS` set) but `aws-xray-sdk` is not installed.
+   * @throws If X-Ray capture is requested but `AWS_XRAY_DAEMON_ADDRESS` is not set.
    */
   static async init({
     clientConfig = {},
@@ -203,6 +221,9 @@ export class AwsSecretsManagerTools {
   /**
    * Read a Secrets Manager secret and parse it as an env-map secret.
    *
+   * @param secretId - Secret name or ARN.
+   * @param versionId - Optional version id to read.
+   *
    * @throws If the secret is missing, binary, invalid JSON, or not an object map.
    */
   async readEnvSecret({
@@ -235,6 +256,10 @@ export class AwsSecretsManagerTools {
    * Write a new version value for an existing secret.
    *
    * This does not create the secret if it does not exist.
+   *
+   * @param secretId - Secret name or ARN.
+   * @param value - Env-map payload to store (JSON object map).
+   * @param versionId - Optional client request token (idempotency).
    */
   async updateEnvSecret({
     secretId,
@@ -259,6 +284,12 @@ export class AwsSecretsManagerTools {
 
   /**
    * Create a new secret containing an env-map.
+   *
+   * @param secretId - Secret name (or ARN in some contexts).
+   * @param value - Env-map payload to store (JSON object map).
+   * @param description - Optional AWS secret description.
+   * @param forceOverwriteReplicaSecret - See AWS CreateSecret behavior for replicas.
+   * @param versionId - Optional client request token (idempotency).
    */
   async createEnvSecret({
     secretId,
@@ -292,6 +323,9 @@ export class AwsSecretsManagerTools {
   /**
    * Put a secret value, creating the secret only when it does not exist.
    *
+   * This creates only when the update fails with `ResourceNotFoundException`;
+   * other errors are re-thrown.
+   *
    * @returns `'updated'` if updated; `'created'` if the secret was created.
    * @throws Re-throws any non-ResourceNotFound AWS errors.
    */
@@ -317,6 +351,12 @@ export class AwsSecretsManagerTools {
    *
    * By default, deletion is recoverable (AWS default recovery window) unless
    * `forceDeleteWithoutRecovery` is set.
+   *
+   * @param secretId - Secret name or ARN.
+   * @param recoveryWindowInDays - Explicit recovery window to use.
+   * @param forceDeleteWithoutRecovery - Dangerous: delete without recovery.
+   *
+   * @throws If both `recoveryWindowInDays` and `forceDeleteWithoutRecovery` are provided.
    */
   async deleteSecret({
     secretId,

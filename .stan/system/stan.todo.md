@@ -2,8 +2,7 @@
 
 ## Next up
 
-- Eliminate remaining TypeDoc warnings for public xray/logger types (keep API types self-contained and documented).
-- Update README with the new programmatic API + CLI usage examples.
+- Run an end-to-end CLI smoke test against a real AWS account.
 
 ## Completed (recent)
 
@@ -20,4 +19,6 @@
 - Fixed Rollup externals for dependency subpath imports; removed invalid `Package` type usage in rollup config.
 - Updated requirements/plan for ESM-only tools API and init flow.
 - Fixed test TS errors when spying on AWS SDK client `send` (overloads).
-- Reworked public xray/logger types to avoid TypeDoc warnings.
+- Reworked public xray/logger types to avoid TypeDoc warnings.
+- Verified TypeDoc runs clean (no warnings).
+- Performed full documentation pass (README + TypeDoc).
