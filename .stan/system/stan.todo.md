@@ -3,6 +3,7 @@
 ## Next up
 
 - Re-run `npm run lint`, `npm run test`, `npm run typecheck`, `npm run build` and fix any remaining issues.
+- Confirm Rollup no longer bundles dependency subpath imports (e.g. `@karmaniverous/get-dotenv/cliHost`) in library/IIFE/CLI builds.
 - Update README with actual CLI usage examples once the CLI is verified end-to-end.
 
 ## Completed (recent)
@@ -16,4 +17,4 @@
 - Removed TypeDoc warnings by documenting public API surfaces.
 - Suppressed Knip warning for intentionally optional `aws-xray-sdk` peer.
 - Fixed Rollup config to avoid importing TS-only source modules at config load time.
-- Fixed last TypeDoc warning for injected client `send` type.
+- Fixed last TypeDoc warning for injected client `send` type.- Fixed Rollup externals for dependency subpath imports; removed invalid `Package` type usage in rollup config.

@@ -1,4 +1,4 @@
-import { createRequire } from 'node:module';
+import { builtinModules, createRequire } from 'node:module';
 
 import aliasPlugin, { type Alias } from '@rollup/plugin-alias';
 import commonjsPlugin from '@rollup/plugin-commonjs';
@@ -17,6 +17,36 @@ type PackageJson = {
   peerDependencies?: Record<string, string>;
 };
 const pkg = require('./package.json') as PackageJson;
+
+/**
+ * Externalization rules:
+ * - Treat Node built-ins and all runtime deps/peerDeps as external.
+ * - Also treat dependency *subpath* imports as external (e.g. `pkg/x`), not just
+ *   the package root `pkg`. This avoids Rollup bundling dependency internals
+ *   when consumers import subpath exports.
+ */
+const runtimeDeps = [
+  ...Object.keys(pkg.dependencies ?? {}),
+  ...Object.keys(pkg.peerDependencies ?? {}),
+  'tslib',
+];
+const runtimeDepSet = new Set(runtimeDeps);
+const runtimeDepPrefixes = runtimeDeps.map((d) => `${d}/`);
+const builtinSet = new Set(builtinModules);
+
+const isNodeBuiltin = (id: string): boolean => {
+  const bare = id.startsWith('node:') ? id.slice(5) : id;
+  return builtinSet.has(bare) || builtinSet.has(id);
+};
+
+const isExternal = (id: string): boolean => {
+  if (!id) return false;
+  if (id.startsWith('\0')) return false;
+  if (id.startsWith('.') || id.startsWith('/')) return false;
+  if (isNodeBuiltin(id)) return true;
+  if (runtimeDepSet.has(id)) return true;
+  return runtimeDepPrefixes.some((p) => id.startsWith(p));
+};
 
 const toIifeGlobalName = (name: string | undefined): string => {
   const base = (name ?? '').split('/').pop() ?? '';
@@ -62,11 +92,7 @@ const commonAliases: Alias[] = [];
  */
 const commonInputOptions: InputOptions = {
   input: 'src/index.ts',
-  external: [
-    ...Object.keys((pkg as unknown as Package).dependencies ?? {}),
-    ...Object.keys((pkg as unknown as Package).peerDependencies ?? {}),
-    'tslib',
-  ],
+  external: (id) => isExternal(id),
   plugins: [aliasPlugin({ entries: commonAliases }), ...commonPlugins],
 };
 
@@ -112,6 +138,7 @@ export const buildLibrary = (dest: string): RollupOptions => ({
 export const buildTypes = (dest: string): RollupOptions => ({
   input: 'src/index.ts',
   output: [{ file: `${dest}/index.d.ts`, format: 'esm' }],
+  external: (id) => isExternal(id),
   plugins: [dtsPlugin()],
 });
 
