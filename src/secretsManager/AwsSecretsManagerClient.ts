@@ -187,7 +187,7 @@ export class AwsSecretsManagerClient {
   /**
    * Create a new secret containing an env-map.
    *
-   * @param name Secret name (or ARN in some contexts).
+   * @param name - Secret name (or ARN in some contexts).
    */
   async createEnvSecret({
     name,
