@@ -4,12 +4,42 @@ When updated: 2025-12-31T00:00:00Z
 
 ## AWS secrets manager tools (get-dotenv based)
 
-- Provide a public TypeScript client named `AwsSecretsManagerClient`.
-  - It wraps AWS Secrets Manager operations needed by the CLI/plugin.
-  - It uses a console-like logger (info/error/debug).
-  - It supports optional AWS X-Ray capture.
-    - Default behavior is “auto”: only attempt X-Ray capture when `AWS_XRAY_DAEMON_ADDRESS` is set.
-    - Do not import or enable X-Ray capture when the daemon address is not set (the X-Ray SDK will throw).
+- Provide a public TypeScript wrapper named `AwsSecretsManagerTools`.
+  - It owns the complex client setup (including optional AWS X-Ray capture) and exposes the fully configured SDK client for advanced usage.
+  - Downstream consumers should primarily import this package (not construct `SecretsManagerClient` themselves) and may import AWS SDK command classes as needed for advanced operations.
+
+- Construction
+  - Provide an async factory:
+    - `AwsSecretsManagerTools.init({ clientConfig?, xray? }) -> Promise<AwsSecretsManagerTools>`
+  - The class constructor is not public (private/protected).
+  - Do not support injecting a pre-built SDK client.
+
+- Exposed instance state (DX / debugging)
+  - `tools.client`: the effective AWS SDK v3 `SecretsManagerClient` instance.
+    - When X-Ray is enabled, this must be the captured/instrumented client.
+  - `tools.clientConfig`: the effective `SecretsManagerClientConfig` used to construct the base client.
+  - `tools.xray`: materialized X-Ray state (mode + enabled flag + daemon address when relevant).
+  - `tools.logger`: the logger used by the wrapper and used (as appropriate) for client construction/capture logging.
+
+- Logging contract
+  - The wrapper uses a console-like logger and requires the minimal set of methods it calls:
+    - `debug`, `info`, `warn`, `error`
+  - If `clientConfig.logger` is provided, validate it satisfies the contract; otherwise throw with a clear message instructing downstream consumers to proxy/wrap their logger.
+  - If no logger is provided, default to `console`.
+
+- Wrapper operations (env-map secrets)
+  - Secret values are always a JSON object map of env vars (`Record<string, string | undefined>`).
+  - Provide convenience methods with “tools-y” names:
+    - `readEnvSecret({ secretId, versionId? })`
+    - `updateEnvSecret({ secretId, value, versionId? })` (update-only; does not create)
+    - `createEnvSecret({ secretId, value, description?, forceOverwriteReplicaSecret?, versionId? })`
+    - `upsertEnvSecret({ secretId, value })` (create if missing, else update)
+    - `deleteSecret({ secretId, recoveryWindowInDays?, forceDeleteWithoutRecovery? })`
+
+- AWS X-Ray capture (guarded)
+  - Default behavior is “auto”: only attempt X-Ray capture when `AWS_XRAY_DAEMON_ADDRESS` is set.
+  - Do not import or enable X-Ray capture when the daemon address is not set (the X-Ray SDK will throw).
+  - In “auto” mode, if `AWS_XRAY_DAEMON_ADDRESS` is set but `aws-xray-sdk` is not installed, throw with a clear error message.
 
 - Provide a get-dotenv plugin mounted as `aws secrets` with commands:
   - `aws secrets pull`
@@ -36,18 +66,17 @@ When updated: 2025-12-31T00:00:00Z
 
 ## Bundling (Rollup)
 
+- Package is ESM-only.
 - Library outputs:
-  - ESM at dist/mjs/index.js
-  - CJS at dist/cjs/index.js
-  - Types bundled at dist/index.d.ts
-- Additional outputs:
-  - Browser IIFE at dist/index.iife.js (and a minified variant)
+  - ESM output (single ESM build; no CJS build).
+  - Types bundled at dist/index.d.ts.
+- CLI outputs:
   - CLI commands built from src/cli/<command>/index.ts into dist/cli/<command>/index.js with a shebang banner (#!/usr/bin/env node).
 - Externalization:
   - Treat Node built-ins and all runtime dependencies/peerDependencies as external.
 - Plugins:
   - Keep the library build minimal (TypeScript for transpile; rollup-plugin-dts for types).
-  - IIFE/CLI builds may use commonjs/json/node-resolve where helpful.
+  - CLI builds may use commonjs/json/node-resolve where helpful.
 - Rollup config contract:
   - rollup.config.ts MUST export:
     - `buildLibrary(dest): RollupOptions`
