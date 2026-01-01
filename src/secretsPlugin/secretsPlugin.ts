@@ -17,7 +17,7 @@ import {
   readMergedOptions,
 } from '@karmaniverous/get-dotenv/cliHost';
 
-import { AwsSecretsManagerClient } from '../secretsManager/AwsSecretsManagerClient';
+import { AwsSecretsManagerTools } from '../secretsManager/AwsSecretsManagerTools';
 import {
   applyIncludeExclude,
   buildExpansionEnv,
@@ -95,12 +95,14 @@ export const secretsPlugin = () =>
             if (!secretId) throw new Error('secret-name is required.');
 
             const region = ctx.plugins?.aws?.region;
-            const sm = new AwsSecretsManagerClient({ region, logger });
+            const tools = await AwsSecretsManagerTools.init({
+              clientConfig: region ? { region, logger } : { logger },
+            });
 
             logger.info(
               `Pulling secret '${secretId}' from AWS Secrets Manager...`,
             );
-            const secrets = await sm.getEnvSecret({ secretId });
+            const secrets = await tools.readEnvSecret({ secretId });
 
             const res = await editDotenvFile(secrets, {
               paths,
@@ -189,12 +191,14 @@ export const secretsPlugin = () =>
             });
 
             const region = ctx.plugins?.aws?.region;
-            const sm = new AwsSecretsManagerClient({ region, logger });
+            const tools = await AwsSecretsManagerTools.init({
+              clientConfig: region ? { region, logger } : { logger },
+            });
 
             logger.info(
               `Pushing secret '${secretId}' to AWS Secrets Manager...`,
             );
-            const mode = await sm.putOrCreateEnvSecret({
+            const mode = await tools.upsertEnvSecret({
               secretId,
               value: secrets,
             });
@@ -236,12 +240,14 @@ export const secretsPlugin = () =>
             }
 
             const region = ctx.plugins?.aws?.region;
-            const sm = new AwsSecretsManagerClient({ region, logger });
+            const tools = await AwsSecretsManagerTools.init({
+              clientConfig: region ? { region, logger } : { logger },
+            });
 
             logger.info(
               `Deleting secret '${secretId}' from AWS Secrets Manager...`,
             );
-            await sm.deleteSecret({
+            await tools.deleteSecret({
               secretId,
               ...(opts.force
                 ? { forceDeleteWithoutRecovery: true }

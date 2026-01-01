@@ -9,7 +9,25 @@
 
 export type XrayMode = 'auto' | 'on' | 'off';
 
-export type Logger = Pick<Console, 'debug' | 'error' | 'info'>;
+/**
+ * Minimal console-like logger contract used by this package.
+ *
+ * If you pass a custom logger via AWS client config, it must implement these
+ * methods (no internal polyfills are applied).
+ */
+export type Logger = Pick<Console, 'debug' | 'error' | 'info' | 'warn'>;
+
+/**
+ * Materialized X-Ray state for diagnostics and DX.
+ *
+ * `enabled` is the effective runtime decision (after applying `mode` and
+ * checking daemon configuration).
+ */
+export type XrayState = {
+  mode: XrayMode;
+  enabled: boolean;
+  daemonAddress?: string;
+};
 
 export const shouldEnableXray = (
   mode: XrayMode | undefined,
@@ -42,9 +60,14 @@ export const captureAwsSdkV3Client = async <TClient extends object>(
 
   // Guarded dynamic import: some X-Ray SDK integrations throw when daemon
   // configuration is missing, so do not import unless we are capturing.
-  const mod = (await import('aws-xray-sdk')) as unknown as {
-    default?: unknown;
-  };
+  let mod: { default?: unknown };
+  try {
+    mod = (await import('aws-xray-sdk')) as unknown as { default?: unknown };
+  } catch {
+    throw new Error(
+      "X-Ray capture is enabled but 'aws-xray-sdk' is not installed. Install it or set xray to 'off'.",
+    );
+  }
   const AWSXRay = (mod.default ?? mod) as unknown as {
     captureAWSv3Client?: <U extends object>(c: U) => U;
   };

@@ -8,8 +8,8 @@ This guide explains the public API and CLI surface for this repo.
 
 ## What this package provides
 
-- A small AWS Secrets Manager wrapper:
-  - `AwsSecretsManagerClient`
+- A tools-style AWS Secrets Manager wrapper that owns complex setup (including optional X-Ray capture) and exposes the fully configured SDK client:
+  - `AwsSecretsManagerTools` (async factory via `AwsSecretsManagerTools.init(...)`)
 - A get-dotenv plugin intended to be mounted under `aws`:
   - `secretsPlugin()` → provides `aws secrets pull|push|delete`
 - A CLI that embeds get-dotenv with the secrets plugin under `aws`:
@@ -19,35 +19,61 @@ This guide explains the public API and CLI surface for this repo.
 
 ```ts
 import {
-  AwsSecretsManagerClient,
+  AwsSecretsManagerTools,
   secretsPlugin,
   type EnvSecretMap,
 } from '@karmaniverous/aws-secrets-manager-tools';
 ```
 
-### AwsSecretsManagerClient
+### AwsSecretsManagerTools
 
-The client assumes secrets are stored as a JSON object map of env vars.
+The tools wrapper assumes Secrets Manager secrets are stored as a JSON object map of env vars.
+
+Initialize tools (recommended):
+
+```ts
+import { AwsSecretsManagerTools } from '@karmaniverous/aws-secrets-manager-tools';
+
+const tools = await AwsSecretsManagerTools.init({
+  clientConfig: { region: 'us-east-1', logger: console },
+  xray: 'auto',
+});
+```
+
+Escape hatch: the fully configured AWS SDK v3 client is available at `tools.client`.
+
+Import AWS SDK command classes as needed for advanced operations:
+
+```ts
+import { ListSecretsCommand } from '@aws-sdk/client-secrets-manager';
+
+const res = await tools.client.send(new ListSecretsCommand({}));
+```
+
+Convenience methods (env-map secrets):
 
 - Reads:
-  - `getEnvSecret({ secretId }) -> EnvSecretMap`
+  - `readEnvSecret({ secretId, versionId? }) -> EnvSecretMap`
 - Writes:
-  - `putOrCreateEnvSecret({ secretId, value })`
+  - `updateEnvSecret({ secretId, value, versionId? })` (update-only; does not create)
+  - `createEnvSecret({ secretId, value, description?, forceOverwriteReplicaSecret?, versionId? })`
+  - `upsertEnvSecret({ secretId, value })`
   - `deleteSecret({ secretId, recoveryWindowInDays?, forceDeleteWithoutRecovery? })`
 
 X-Ray capture is optional and guarded:
 
 - Default behavior is “auto”: capture is only enabled when `AWS_XRAY_DAEMON_ADDRESS` is set.
 - To enable capture, install the optional peer dependency: `aws-xray-sdk`.
+- In “auto” mode, if `AWS_XRAY_DAEMON_ADDRESS` is set but `aws-xray-sdk` is not installed, initialization throws.
 
 ## CLI usage
 
 The CLI is a get-dotenv CLI with shipped plugins and `aws secrets` mounted under `aws`:
 
 ```bash
-aws-secrets-manager-tools aws secrets pull --env dev --secret-name '$STACK_NAME'
-aws-secrets-manager-tools aws secrets push --env dev --secret-name '$STACK_NAME'
-aws-secrets-manager-tools aws secrets delete --env dev --secret-name '$STACK_NAME'
+aws-secrets-manager-tools --env dev aws secrets pull --secret-name '$STACK_NAME'
+aws-secrets-manager-tools --env dev aws secrets push --secret-name '$STACK_NAME'
+aws-secrets-manager-tools --env dev aws secrets delete --secret-name '$STACK_NAME'
 ```
 
 Notes:

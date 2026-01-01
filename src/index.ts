@@ -6,13 +6,15 @@
 
 /**
  * Requirements addressed:
- * - Export a public `AwsSecretsManagerClient`.
+ * - Export a public `AwsSecretsManagerTools`.
  * - Export the get-dotenv `secretsPlugin` for mounting under `aws`.
  */
 
 export {
-  AwsSecretsManagerClient,
-  type AwsSecretsManagerClientOptions,
-} from './secretsManager/AwsSecretsManagerClient';
+  AwsSecretsManagerTools,
+  type AwsSecretsManagerToolsInitOptions,
+  type AwsSecretsManagerToolsLogger,
+  type XrayState,
+} from './secretsManager/AwsSecretsManagerTools';
 export type { EnvSecretMap } from './secretsManager/envSecretMap';
 export { secretsPlugin } from './secretsPlugin/secretsPlugin';
