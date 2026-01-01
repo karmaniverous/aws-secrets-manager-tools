@@ -2,16 +2,8 @@
 
 ## Next up
 
-- Update the package to be ESM-only:
-  - Remove CJS + IIFE outputs from Rollup and update `package.json` exports accordingly.
-  - Re-run `npm run lint`, `npm run test`, `npm run typecheck`, `npm run docs`, `npm run build` and fix any remaining issues.
-- Refactor the public wrapper API:
-  - Rename `AwsSecretsManagerClient` -> `AwsSecretsManagerTools`.
-  - Replace public construction with `await AwsSecretsManagerTools.init({ clientConfig?, xray? })` and make the constructor non-public.
-  - Expose `tools.client` (effective/captured client), plus materialize `tools.logger`, `tools.xray`, and `tools.clientConfig`.
-  - Remove any injected-client option from the public API.
-  - Rename wrapper methods to: `readEnvSecret`, `updateEnvSecret`, `createEnvSecret`, `upsertEnvSecret`, `deleteSecret`.
-- Update the get-dotenv plugin/CLI/tests/docs to use the new names and initialization flow.
+- Eliminate remaining TypeDoc warnings for public xray/logger types (keep API types self-contained and documented).
+- Update README with the new programmatic API + CLI usage examples.
 
 ## Completed (recent)
 
@@ -28,3 +20,4 @@
 - Fixed Rollup externals for dependency subpath imports; removed invalid `Package` type usage in rollup config.
 - Updated requirements/plan for ESM-only tools API and init flow.
 - Fixed test TS errors when spying on AWS SDK client `send` (overloads).
+- Reworked public xray/logger types to avoid TypeDoc warnings.

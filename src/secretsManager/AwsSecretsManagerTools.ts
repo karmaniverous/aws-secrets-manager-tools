@@ -25,19 +25,36 @@ import {
 
 import { isResourceNotFoundError } from './awsError';
 import type { EnvSecretMap } from './envSecretMap';
-import {
-  captureAwsSdkV3Client,
-  type Logger,
-  shouldEnableXray,
-  type XrayMode,
-  type XrayState,
-} from './xray';
+import { captureAwsSdkV3Client, shouldEnableXray } from './xray';
 
-/** Re-export for public API consumers (without importing internal xray module). */
-export type { XrayState } from './xray';
+/**
+ * Console-like logger contract used by AwsSecretsManagerTools.
+ *
+ * If you pass a custom logger via `clientConfig.logger`, it must implement
+ * these methods (no internal polyfills are applied).
+ */
+export type AwsSecretsManagerToolsLogger = Pick<
+  Console,
+  'debug' | 'error' | 'info' | 'warn'
+>;
 
-/** Console-like logger contract used by AwsSecretsManagerTools. */
-export type AwsSecretsManagerToolsLogger = Logger;
+/** X-Ray capture mode for {@link AwsSecretsManagerTools.init}. */
+export type AwsSecretsManagerToolsXrayMode = 'auto' | 'on' | 'off';
+
+/**
+ * Materialized X-Ray state for diagnostics and DX.
+ *
+ * Note: `enabled` reflects the effective runtime decision after applying the
+ * configured `mode` and checking daemon configuration.
+ */
+export type XrayState = {
+  /** Capture mode configured for initialization. */
+  mode: AwsSecretsManagerToolsXrayMode;
+  /** Whether capture is enabled for the effective client instance. */
+  enabled: boolean;
+  /** Daemon address used when capture is enabled (if available). */
+  daemonAddress?: string;
+};
 
 /** Options for {@link AwsSecretsManagerTools.init}. */
 export type AwsSecretsManagerToolsInitOptions = {
@@ -56,7 +73,7 @@ export type AwsSecretsManagerToolsInitOptions = {
    * - `on`: force enable (throws if daemon address is missing).
    * - `off`: disable.
    */
-  xray?: XrayMode;
+  xray?: AwsSecretsManagerToolsXrayMode;
 };
 
 const assertLogger = (candidate: unknown): AwsSecretsManagerToolsLogger => {

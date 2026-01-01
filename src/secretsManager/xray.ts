@@ -17,18 +17,6 @@ export type XrayMode = 'auto' | 'on' | 'off';
  */
 export type Logger = Pick<Console, 'debug' | 'error' | 'info' | 'warn'>;
 
-/**
- * Materialized X-Ray state for diagnostics and DX.
- *
- * `enabled` is the effective runtime decision (after applying `mode` and
- * checking daemon configuration).
- */
-export type XrayState = {
-  mode: XrayMode;
-  enabled: boolean;
-  daemonAddress?: string;
-};
-
 export const shouldEnableXray = (
   mode: XrayMode | undefined,
   daemonAddress: string | undefined,

@@ -14,6 +14,7 @@ export {
   AwsSecretsManagerTools,
   type AwsSecretsManagerToolsInitOptions,
   type AwsSecretsManagerToolsLogger,
+  type AwsSecretsManagerToolsXrayMode,
   type XrayState,
 } from './secretsManager/AwsSecretsManagerTools';
 export type { EnvSecretMap } from './secretsManager/envSecretMap';
