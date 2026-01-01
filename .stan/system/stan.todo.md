@@ -24,4 +24,7 @@
 - Removed TypeDoc warnings by documenting public API surfaces.
 - Suppressed Knip warning for intentionally optional `aws-xray-sdk` peer.
 - Fixed Rollup config to avoid importing TS-only source modules at config load time.
-- Fixed last TypeDoc warning for injected client `send` type.- Fixed Rollup externals for dependency subpath imports; removed invalid `Package` type usage in rollup config.- Updated requirements/plan for ESM-only tools API and init flow.
+- Fixed last TypeDoc warning for injected client `send` type.
+- Fixed Rollup externals for dependency subpath imports; removed invalid `Package` type usage in rollup config.
+- Updated requirements/plan for ESM-only tools API and init flow.
+- Fixed test TS errors when spying on AWS SDK client `send` (overloads).
