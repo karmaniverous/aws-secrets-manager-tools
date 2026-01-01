@@ -20,9 +20,15 @@ import { isResourceNotFoundError } from './awsError';
 import type { EnvSecretMap } from './envSecretMap';
 import { captureAwsSdkV3Client, type Logger, type XrayMode } from './xray';
 
-type AwsSdkV3ClientLike = {
+/**
+ * Minimal AWS SDK v3-style client interface used for dependency injection.
+ *
+ * This is primarily intended for tests and advanced consumers.
+ */
+export interface AwsSdkV3Client {
+  /** Send an AWS SDK v3 command object and return a response. */
   send: (cmd: unknown) => Promise<unknown>;
-};
+}
 
 export type AwsSecretsManagerClientOptions = {
   /** Logger instance (must implement info/error/debug). Defaults to `console`. */
@@ -41,7 +47,7 @@ export type AwsSecretsManagerClientOptions = {
    * Injection seam for tests and advanced consumers. If provided, region/xray
    * options are ignored.
    */
-  client?: { send: (cmd: unknown) => Promise<unknown> };
+  client?: AwsSdkV3Client;
 };
 
 const assertLogger = (logger: Logger) => {
@@ -91,7 +97,7 @@ const toSecretString = (value: EnvSecretMap): string => JSON.stringify(value);
  */
 export class AwsSecretsManagerClient {
   readonly #logger: Logger;
-  readonly #client: AwsSdkV3ClientLike;
+  readonly #client: AwsSdkV3Client;
 
   constructor({
     client,
@@ -122,7 +128,7 @@ export class AwsSecretsManagerClient {
           mode: xray as XrayMode,
           logger: this.#logger,
         });
-        return (c as unknown as AwsSdkV3ClientLike).send(cmd);
+        return (c as unknown as AwsSdkV3Client).send(cmd);
       },
     };
   }

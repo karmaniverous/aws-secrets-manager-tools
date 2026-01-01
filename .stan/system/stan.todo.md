@@ -15,3 +15,5 @@
 - Fixed build script to load `rollup.config.ts` (no missing `rollup.config.mjs`).
 - Removed TypeDoc warnings by documenting public API surfaces.
 - Suppressed Knip warning for intentionally optional `aws-xray-sdk` peer.
+- Fixed Rollup config to avoid importing TS-only source modules at config load time.
+- Fixed last TypeDoc warning for injected client `send` type.

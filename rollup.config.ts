@@ -11,10 +11,19 @@ import type { InputOptions, OutputOptions, RollupOptions } from 'rollup';
 import dtsPlugin from 'rollup-plugin-dts';
 
 const require = createRequire(import.meta.url);
-type Package = Record<string, Record<string, string> | undefined>;
-const pkg = require('./package.json') as Package;
+type PackageJson = {
+  name?: string;
+  dependencies?: Record<string, string>;
+  peerDependencies?: Record<string, string>;
+};
+const pkg = require('./package.json') as PackageJson;
 
-import { packageName } from './src/util/packageName';
+const toIifeGlobalName = (name: string | undefined): string => {
+  const base = (name ?? '').split('/').pop() ?? '';
+  const cleaned = base.replace(/[^A-Za-z0-9_$]/g, '_');
+  if (!cleaned) return 'unknown';
+  return /^[0-9]/.test(cleaned) ? `_${cleaned}` : cleaned;
+};
 
 const outputPath = `dist`;
 
@@ -62,7 +71,7 @@ const commonInputOptions: InputOptions = {
 };
 
 const iifeCommonOutputOptions: OutputOptions = {
-  name: packageName ?? 'unknown',
+  name: toIifeGlobalName(pkg.name),
 };
 
 /**
