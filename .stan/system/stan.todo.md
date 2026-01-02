@@ -27,3 +27,4 @@
 - Implemented provenance-based `--from`/`--to` selectors with tests and docs.
 - Switched CLI conflicts to Commander and added dynamic help defaults.
 - Decomposed `aws secrets` commands and fixed dynamic option registration.
+- Removed `any` from command shim typing to satisfy lint.
