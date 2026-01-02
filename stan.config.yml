@@ -4,9 +4,11 @@ stan-core:
     - docs
     - package-lock.json
   imports:
+    '@commander-js/extra-typings':
+      - node_modules/@commander-js/extra-typings/index.d.ts
     '@karmaniverous/get-dotenv':
       - ../get-dotenv/.stan/interop/aws-secrets-manager-tools/**
-      - ../get-dotenv/guides/stan-assistant-guide.md
+      - ../get-dotenv/guides/stan-assistant-guide/index.md
   includes: []
 stan-cli:
   cliDefaults:

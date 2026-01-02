@@ -2,11 +2,6 @@
 
 ## Next up
 
-- Update `aws secrets push` to select payload keys from `ctx.dotenv` using provenance-based `--from` selectors (default `file:env:private`), then narrow with include/exclude, and enforce the 64 KiB SecretString size limit.
-- Update `aws secrets pull` to use `--to <scope>:<privacy>` for destination selection (replace `--scope/--privacy`), require `--env` only for `env:*`, and add include/exclude filtering.
-- Add safe plugin config defaults under `plugins['aws/secrets']` (no dangerous delete defaults).
-- Add/adjust tests for selector parsing, provenance matching (effective entry only), include/exclude interactions, and size guardrail behavior.
-- Update README and the repo STAN assistant guide to document `--from`/`--to` usage and the provenance-based selection model.
 - Run an end-to-end CLI smoke test against a real AWS account.
 
 ## Completed (recent)
@@ -29,3 +24,4 @@
 - Performed full documentation pass (README + TypeDoc).
 - Fixed TypeDoc @param warnings for opts destructuring.
 - Updated requirements/plan for provenance-based `aws secrets` selectors (`--from`/`--to`).
+- Implemented provenance-based `--from`/`--to` selectors with tests and docs.- Switched CLI conflicts to Commander and added dynamic help defaults.

@@ -12,5 +12,7 @@ Project policies:
 - Use `radash` instead of `lodash`.
 - Optional AWS X-Ray support must be guarded:
   - do not import or enable X-Ray capture unless `AWS_XRAY_DAEMON_ADDRESS` is set (X-Ray SDK will throw otherwise).
+- For CLI option conflicts, prefer Commander `.conflicts(...)` over manual runtime checks when possible.
+- For config-backed plugin options, use get-dotenv plugin dynamic options to show composed defaults in help output.
 
 If project requirements change, update `.stan/system/stan.requirements.md` and `.stan/system/stan.todo.md` together.

@@ -80,3 +80,20 @@ Notes:
 
 - Secret name expansion is evaluated at action-time against: `{ ...process.env, ...ctx.dotenv }` (ctx wins).
 - `delete` is recoverable by default; pass `--force` to delete without recovery.
+
+### `pull` destination selection (`--to`)
+
+`aws secrets pull` writes to a single dotenv target selected by `--to`:
+
+- `--to env:private` (default) → `.env.<env>.<privateToken>`
+- `--to global:public` → `.env`
+
+When `--to env:*` is selected, `--env` (or defaultEnv) is required.
+
+### `push` payload selection (`--from`)
+
+`aws secrets push` uses get-dotenv provenance (`ctx.dotenvProvenance`) to select a subset of *loaded* keys to push, using only the effective provenance entry for each key:
+
+- `--from file:env:private` (default)
+- Additional `--from` selectors can include `config:*:*:*`, `dynamic:*`, or `vars` (repeatable).
+- `--include/--exclude` can be used after provenance selection to fine-tune keys (mutually exclusive; unknown keys ignored).

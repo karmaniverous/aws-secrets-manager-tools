@@ -113,3 +113,21 @@ Notes:
 - `--env` is a root-level (get-dotenv) option and must appear before the command path.
 - Secret name expansion is evaluated at action time against: `{ ...process.env, ...ctx.dotenv }` (ctx wins).
 - `delete` is recoverable by default; pass `--force` to delete without recovery.
+
+### `pull` destination selector (`--to`)
+
+`aws secrets pull` writes to a single dotenv file selected by `--to`:
+
+- `--to env:private` (default) → `.env.<env>.<privateToken>` (e.g. `.env.dev.local`)
+- `--to env:public` → `.env.<env>`
+- `--to global:private` → `.env.<privateToken>`
+- `--to global:public` → `.env`
+
+When `--to env:*` is selected, `--env` (or defaultEnv) is required.
+
+### `push` provenance selector (`--from`)
+
+`aws secrets push` selects which loaded keys to push using get-dotenv provenance (`ctx.dotenvProvenance`) and the effective provenance entry only.
+
+- `--from file:env:private` is the default selection.
+- Use repeatable `--from ...` selectors to broaden/narrow efficiently, then optionally apply `--include/--exclude` as a final key filter.
