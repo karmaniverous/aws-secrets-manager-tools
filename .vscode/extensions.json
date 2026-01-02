@@ -5,6 +5,7 @@
     "github.vscode-github-actions",
     "gruntfuggly.todo-tree",
     "redhat.vscode-yaml",
-    "vitest.explorer"
+    "vitest.explorer",
+    "amazonwebservices.aws-toolkit-vscode"
   ]
 }

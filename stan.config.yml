@@ -26,7 +26,9 @@ stan-cli:
     docs:
       script: npm run docs -- --emit none
       warnPattern: \\[warning\\]
-    build: cross-env NO_COLOR=1 npm run build
+    build:
+      script: cross-env NO_COLOR=1 npm run build
+      warnPattern: \(!\)
     knip:
       script: npm run knip
       warnPattern: hints
