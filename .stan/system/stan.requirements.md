@@ -54,8 +54,40 @@ When updated: 2025-12-31T00:00:00Z
   - `delete` defaults to recoverable deletion.
     - Do not specify `RecoveryWindowInDays` unless provided explicitly by the user.
     - Require `--force` to delete without recovery (`ForceDeleteWithoutRecovery: true`).
+  - `push` uses get-dotenv provenance to select a subset of loaded keys for the secret payload.
+    - Source of truth for values is `ctx.dotenv` (the host-resolved environment).
+    - Selection is based on `ctx.dotenvProvenance` using the effective provenance entry only (the last entry for a key), not “any layer”.
+    - Provide a repeatable `--from <selector...>` option that filters keys by effective provenance entry.
+      - Default selection when `--from` is omitted: `file:env:private`.
+      - Selector grammar supports all enumerated provenance kinds:
+        - `file:<scope>:<privacy>` where `<scope>` is `global|env|*` and `<privacy>` is `public|private|*`
+        - `config:<configScope>:<scope>:<privacy>` where `<configScope>` is `packaged|project|*`
+        - `dynamic:<dynamicSource>` where `<dynamicSource>` is `config|programmatic|dynamicPath|*`
+        - `vars`
+      - Do not support file path-based matching in selectors.
+    - After provenance selection, apply `--include/--exclude` as a final narrowing step.
+      - `--include` and `--exclude` are mutually exclusive.
+      - Unknown keys are ignored (no error).
+    - Enforce AWS Secrets Manager SecretString size limits:
+      - After filtering and JSON serialization, fail if the UTF-8 byte length exceeds 65,536 bytes.
+  - `pull` supports destination selection and optional key filtering:
+    - Replace `--scope`/`--privacy` flags with a single `--to <scope>:<privacy>` selector for the destination dotenv file.
+      - Default: `env:private` (writes to `.env.<env>.<privateToken>`).
+      - Require `--env` (or defaultEnv resolution) only when `--to env:*` is selected.
+    - Support `--include/--exclude` to filter which pulled keys are written (partial update; does not delete unspecified keys).
   - `push` include/exclude filters ignore unknown keys (no error).
   - Region is sourced from the aws plugin context (not hard-coded).
+
+- get-dotenv config support for `aws secrets` (safe defaults only)
+  - Support plugin configuration under `plugins['aws/secrets']` for safe default values, without enabling dangerous behavior by default.
+  - Allowed safe defaults include:
+    - `secretName` default
+    - `templateExtension` default
+    - `from` selectors default for push
+    - `to` selector default for pull
+    - `include`/`exclude` defaults (with mutual exclusion enforced at runtime)
+  - Disallowed defaults include:
+    - `delete.force` (must only be enabled explicitly by CLI flag)
 
 ## CLI
 
