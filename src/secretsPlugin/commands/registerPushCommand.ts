@@ -118,7 +118,9 @@ export const registerPushCommand = ({
       .conflicts('exclude'),
   );
 
-  push.action(async (opts: PushOpts) => {
+  push.action(async (...args: unknown[]) => {
+    const [opts] = args as [PushOpts];
+
     const logger = console;
     const ctx = c.getCtx();
     const cfg = coerceSecretsPluginConfig(p.readConfig(c));

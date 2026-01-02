@@ -59,7 +59,9 @@ export const registerDeleteCommand = ({
     .default(false);
   del.addOption(delForceOpt);
 
-  del.action(async (opts: DeleteOpts) => {
+  del.action(async (...args: unknown[]) => {
+    const [opts] = args as [DeleteOpts];
+
     const logger = console;
     const ctx = c.getCtx();
     const cfg = coerceSecretsPluginConfig(p.readConfig(c));

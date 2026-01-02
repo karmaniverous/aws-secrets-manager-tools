@@ -120,7 +120,9 @@ export const registerPullCommand = ({
       .conflicts('exclude'),
   );
 
-  pull.action(async (opts: PullOpts, command: ReadMergedOptionsCommand) => {
+  pull.action(async (...args: unknown[]) => {
+    const [opts, command] = args as [PullOpts, ReadMergedOptionsCommand];
+
     const logger = console;
     const ctx = c.getCtx();
     const bag = readMergedOptions(command) as Record<string, unknown>;
