@@ -24,4 +24,6 @@
 - Performed full documentation pass (README + TypeDoc).
 - Fixed TypeDoc @param warnings for opts destructuring.
 - Updated requirements/plan for provenance-based `aws secrets` selectors (`--from`/`--to`).
-- Implemented provenance-based `--from`/`--to` selectors with tests and docs.- Switched CLI conflicts to Commander and added dynamic help defaults.
+- Implemented provenance-based `--from`/`--to` selectors with tests and docs.
+- Switched CLI conflicts to Commander and added dynamic help defaults.
+- Decomposed `aws secrets` commands and fixed dynamic option registration.

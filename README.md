@@ -130,4 +130,4 @@ When `--to env:*` is selected, `--env` (or defaultEnv) is required.
 `aws secrets push` selects which loaded keys to push using get-dotenv provenance (`ctx.dotenvProvenance`) and the effective provenance entry only.
 
 - `--from file:env:private` is the default selection.
-- Use repeatable `--from ...` selectors to broaden/narrow efficiently, then optionally apply `--include/--exclude` as a final key filter.
+- Use repeatable `--from <selector>` options to broaden/narrow efficiently, then optionally apply `--include/--exclude` as a final key filter.
