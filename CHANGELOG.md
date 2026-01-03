@@ -2,9 +2,18 @@
 
 All notable changes to this project will be documented in this file. Dates are displayed in UTC.
 
+#### [0.1.1](https://github.com/karmaniverous/aws-secrets-manager-tools/compare/0.1.0...0.1.1)
+
+- docs: sync STAN assistant guide [`2f27323`](https://github.com/karmaniverous/aws-secrets-manager-tools/commit/2f273239b5eefc249bb37407e081e788844ef43a)
+- updated readme [`cfcb055`](https://github.com/karmaniverous/aws-secrets-manager-tools/commit/cfcb055636149544e1e788c893d32e536c7c2b4b)
+- updated readme [`268bd67`](https://github.com/karmaniverous/aws-secrets-manager-tools/commit/268bd67801852b4c4c09b0d29868b0adbc6e86ad)
+
 #### 0.1.0
 
+> 3 January 2026
+
 - Initial commit [`5111ef2`](https://github.com/karmaniverous/aws-secrets-manager-tools/commit/5111ef2643455814e7854554659da7b4facef944)
+- chore: release v0.1.0 [`0b81c34`](https://github.com/karmaniverous/aws-secrets-manager-tools/commit/0b81c3460336a982ba92d26c02125185b918c7a3)
 - installed dependencies [`21b3b3a`](https://github.com/karmaniverous/aws-secrets-manager-tools/commit/21b3b3a3ef61794fec7eae400a80aebe419c884e)
 - Refactor secrets plugin command registration [`8fb0251`](https://github.com/karmaniverous/aws-secrets-manager-tools/commit/8fb025139548d0ecad94a79db5eac761f7e087f1)
 - Implement provenance selectors for secrets [`67e0925`](https://github.com/karmaniverous/aws-secrets-manager-tools/commit/67e0925abeba5641a1b2c34594f5d479636aa638)

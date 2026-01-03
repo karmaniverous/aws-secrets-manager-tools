@@ -2,58 +2,58 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 	<url>
 		<loc>https://docs.karmanivero.us/aws-secrets-manager-tools/index.html</loc>
-		<lastmod>2026-01-03T14:40:24.864Z</lastmod>
+		<lastmod>2026-01-03T14:54:08.473Z</lastmod>
 	</url>
 	<url>
 		<loc>https://docs.karmanivero.us/aws-secrets-manager-tools/modules.html</loc>
-		<lastmod>2026-01-03T14:40:24.864Z</lastmod>
+		<lastmod>2026-01-03T14:54:08.473Z</lastmod>
 	</url>
 	<url>
 		<loc>https://docs.karmanivero.us/aws-secrets-manager-tools/hierarchy.html</loc>
-		<lastmod>2026-01-03T14:40:24.864Z</lastmod>
+		<lastmod>2026-01-03T14:54:08.473Z</lastmod>
 	</url>
 	<url>
 		<loc>https://docs.karmanivero.us/aws-secrets-manager-tools/documents/AwsSecretsManagerTools.html</loc>
-		<lastmod>2026-01-03T14:40:24.864Z</lastmod>
+		<lastmod>2026-01-03T14:54:08.473Z</lastmod>
 	</url>
 	<url>
 		<loc>https://docs.karmanivero.us/aws-secrets-manager-tools/documents/get-dotenv_plugin.html</loc>
-		<lastmod>2026-01-03T14:40:24.864Z</lastmod>
+		<lastmod>2026-01-03T14:54:08.473Z</lastmod>
 	</url>
 	<url>
 		<loc>https://docs.karmanivero.us/aws-secrets-manager-tools/documents/CHANGELOG.html</loc>
-		<lastmod>2026-01-03T14:40:24.864Z</lastmod>
+		<lastmod>2026-01-03T14:54:08.473Z</lastmod>
 	</url>
 	<url>
 		<loc>https://docs.karmanivero.us/aws-secrets-manager-tools/modules/index.html</loc>
-		<lastmod>2026-01-03T14:40:24.864Z</lastmod>
+		<lastmod>2026-01-03T14:54:08.473Z</lastmod>
 	</url>
 	<url>
 		<loc>https://docs.karmanivero.us/aws-secrets-manager-tools/classes/index.AwsSecretsManagerTools.html</loc>
-		<lastmod>2026-01-03T14:40:24.864Z</lastmod>
+		<lastmod>2026-01-03T14:54:08.473Z</lastmod>
 	</url>
 	<url>
 		<loc>https://docs.karmanivero.us/aws-secrets-manager-tools/types/index.AwsSecretsManagerToolsInitOptions.html</loc>
-		<lastmod>2026-01-03T14:40:24.864Z</lastmod>
+		<lastmod>2026-01-03T14:54:08.473Z</lastmod>
 	</url>
 	<url>
 		<loc>https://docs.karmanivero.us/aws-secrets-manager-tools/types/index.AwsSecretsManagerToolsLogger.html</loc>
-		<lastmod>2026-01-03T14:40:24.864Z</lastmod>
+		<lastmod>2026-01-03T14:54:08.473Z</lastmod>
 	</url>
 	<url>
 		<loc>https://docs.karmanivero.us/aws-secrets-manager-tools/types/index.AwsSecretsManagerToolsXrayMode.html</loc>
-		<lastmod>2026-01-03T14:40:24.864Z</lastmod>
+		<lastmod>2026-01-03T14:54:08.473Z</lastmod>
 	</url>
 	<url>
 		<loc>https://docs.karmanivero.us/aws-secrets-manager-tools/types/index.EnvSecretMap.html</loc>
-		<lastmod>2026-01-03T14:40:24.864Z</lastmod>
+		<lastmod>2026-01-03T14:54:08.473Z</lastmod>
 	</url>
 	<url>
 		<loc>https://docs.karmanivero.us/aws-secrets-manager-tools/types/index.XrayState.html</loc>
-		<lastmod>2026-01-03T14:40:24.864Z</lastmod>
+		<lastmod>2026-01-03T14:54:08.473Z</lastmod>
 	</url>
 	<url>
 		<loc>https://docs.karmanivero.us/aws-secrets-manager-tools/functions/index.secretsPlugin.html</loc>
-		<lastmod>2026-01-03T14:40:24.864Z</lastmod>
+		<lastmod>2026-01-03T14:54:08.473Z</lastmod>
 	</url>
 </urlset>
