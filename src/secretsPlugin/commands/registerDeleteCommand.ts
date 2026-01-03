@@ -7,9 +7,11 @@
  *   composed defaults in help output.
  */
 
+import { readMergedOptions } from '@karmaniverous/get-dotenv/cliHost';
+
 import { AwsSecretsManagerTools } from '../../secretsManager/AwsSecretsManagerTools';
 import { buildExpansionEnv, expandSecretName } from '../secretsUtils';
-import { getAwsRegion, toNumber } from './commandUtils';
+import { getAwsRegion, silentLogger, toNumber } from './commandUtils';
 import type { SecretsPluginApi, SecretsPluginCli } from './types';
 
 export const registerDeleteCommand = ({
@@ -47,6 +49,9 @@ export const registerDeleteCommand = ({
     .addOption(delRecoveryOpt)
     .addOption(delForceOpt)
     .action(async (opts) => {
+      const bag = readMergedOptions(del);
+      const sdkLogger = bag.debug ? console : silentLogger;
+
       const logger = console;
       const ctx = cli.getCtx();
       const cfg = plugin.readConfig(del);
@@ -60,7 +65,9 @@ export const registerDeleteCommand = ({
 
       const region = getAwsRegion(ctx);
       const tools = await AwsSecretsManagerTools.init({
-        clientConfig: region ? { region, logger } : { logger },
+        clientConfig: region
+          ? { region, logger: sdkLogger }
+          : { logger: sdkLogger },
       });
 
       logger.info(`Deleting secret '${secretId}' from AWS Secrets Manager...`);

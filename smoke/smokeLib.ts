@@ -270,12 +270,11 @@ export const expectCommandFail = (res: RunResult, label: string): void => {
 };
 
 export const logCommandOk = (res: RunResult, label: string): void => {
-  // Keep smoke runs visibly “alive” without spamming by default.
-  // Opt into verbose child output with SMOKE_VERBOSE=1.
+  // Keep smoke runs visibly “alive” without spamming.
+  // Opt into child output with SMOKE_VERBOSE=1.
   console.log(`${label}: ok`);
 
-  const verbose = process.env.SMOKE_VERBOSE === '1';
-  if (!verbose) return;
+  if (process.env.SMOKE_VERBOSE !== '1') return;
 
   const clip = (s: string, limit = 8_000): string =>
     s.length > limit ? `${s.slice(0, limit)}\n[truncated]` : s;

@@ -108,6 +108,7 @@ const main = async (): Promise<void> => {
   const smokeEnv = await loadSmokeEnv(repoRoot);
   const keepArtifacts = shouldKeepArtifacts(smokeEnv);
   const secretId = makeSecretId();
+  console.log(`smoke:overlay: secretId=${secretId}`);
 
   await assertSmokeFixturesPresent({ repoRoot });
   const fixtures = getAwsSecretsFixturePaths({ repoRoot });

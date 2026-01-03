@@ -7,6 +7,8 @@
  * - Dynamic options must be registered on the command to drive typing + help.
  */
 
+import { readMergedOptions } from '@karmaniverous/get-dotenv/cliHost';
+
 import { AwsSecretsManagerTools } from '../../secretsManager/AwsSecretsManagerTools';
 import {
   parseFromSelector,
@@ -23,6 +25,7 @@ import {
   describeConfigKeyListDefaults,
   describeDefault,
   getAwsRegion,
+  silentLogger,
 } from './commandUtils';
 import type { SecretsPluginApi, SecretsPluginCli } from './types';
 
@@ -98,9 +101,13 @@ export const registerPushCommand = ({
         .conflicts('exclude'),
     )
     .action(async (opts) => {
-      const logger = console;
       const ctx = cli.getCtx();
       const cfg = plugin.readConfig(push);
+
+      const bag = readMergedOptions(push);
+      const sdkLogger = bag.debug ? console : silentLogger;
+
+      const logger = console;
 
       const fromRaw = opts.from?.length
         ? opts.from
@@ -131,7 +138,9 @@ export const registerPushCommand = ({
 
       const region = getAwsRegion(ctx);
       const tools = await AwsSecretsManagerTools.init({
-        clientConfig: region ? { region, logger } : { logger },
+        clientConfig: region
+          ? { region, logger: sdkLogger }
+          : { logger: sdkLogger },
       });
 
       logger.info(`Pushing secret '${secretId}' to AWS Secrets Manager...`);

@@ -39,4 +39,5 @@
 - Suppressed build/docs/knip warnings (tsx rollup + TSDoc + knip ignore).
 - Fixed smoke harness to spawn tsx via npx (exports-safe).
 - Fixed smoke overlay config schema + added smoke progress logs.
-- Made smoke output concise by default (SMOKE_VERBOSE=1 for full logs).
+- Made smoke output concise by default (SMOKE_VERBOSE=1 for full logs).
+- Quieted AWS SDK logging by default; smoke logs now concise.

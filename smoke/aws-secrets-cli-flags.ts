@@ -36,6 +36,7 @@ const main = async (): Promise<void> => {
   const profile = smokeEnv.SMOKE_AWS_PROFILE ?? 'JGS-SSO';
   const keepArtifacts = shouldKeepArtifacts(smokeEnv);
   const secretId = makeSecretId();
+  console.log(`smoke:flags: profile=${profile} secretId=${secretId}`);
 
   await assertSmokeFixturesPresent({ repoRoot });
   const fixtures = getAwsSecretsFixturePaths({ repoRoot });

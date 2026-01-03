@@ -8,6 +8,21 @@
 
 import { Buffer } from 'node:buffer';
 
+export const silentLogger = {
+  debug: () => {
+    // no-op
+  },
+  info: () => {
+    // no-op
+  },
+  warn: () => {
+    // no-op
+  },
+  error: () => {
+    // no-op
+  },
+} satisfies Pick<Console, 'debug' | 'info' | 'warn' | 'error'>;
+
 export const requireString = (v: unknown, msg: string): string => {
   if (typeof v !== 'string' || !v) throw new Error(msg);
   return v;

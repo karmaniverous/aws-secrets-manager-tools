@@ -27,11 +27,20 @@ npm run smoke:flags
 npm run smoke:overlay
 ```
 
+### Debugging output
+
+By default, smoke scripts print concise step-level progress (`push/pull/delete`) and avoid printing the full captured output of the spawned CLI.
+
+To see the spawned CLI’s full captured stdout/stderr (useful for debugging), set:
+
+```bash
+SMOKE_VERBOSE=1 npm run smoke:flags
+SMOKE_VERBOSE=1 npm run smoke:overlay
+```
+
 Notes:
 
-- Both scripts use AWS SSO login-on-demand. If your SSO session is expired,
-  you may be prompted to login.
-- The smoke tests write `smoke/fixtures/aws-secrets/.env.local` during `pull`
-  to validate template bootstrap and format preservation.
+- Both scripts use AWS SSO login-on-demand. If your SSO session is expired, you may be prompted to login.
+- The smoke tests write `smoke/fixtures/aws-secrets/.env.local` during `pull` to validate template bootstrap and format preservation.
   - It is deleted at the end by default.
   - Set `SMOKE_KEEP_ARTIFACTS=1` to keep it for inspection.

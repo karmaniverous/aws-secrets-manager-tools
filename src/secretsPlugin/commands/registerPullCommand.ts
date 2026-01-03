@@ -25,6 +25,7 @@ import {
   describeConfigKeyListDefaults,
   getAwsRegion,
   requireString,
+  silentLogger,
 } from './commandUtils';
 import type { SecretsPluginApi, SecretsPluginCli } from './types';
 
@@ -106,6 +107,7 @@ export const registerPullCommand = ({
       const bag = readMergedOptions(command);
       const rootOpts = getDotenvCliOptions2Options(bag);
       const cfg = plugin.readConfig(pull);
+      const sdkLogger = bag.debug ? console : silentLogger;
 
       const paths = rootOpts.paths ?? ['./'];
       const dotenvToken = rootOpts.dotenvToken ?? '.env';
@@ -121,7 +123,9 @@ export const registerPullCommand = ({
 
       const region = getAwsRegion(ctx);
       const tools = await AwsSecretsManagerTools.init({
-        clientConfig: region ? { region, logger } : { logger },
+        clientConfig: region
+          ? { region, logger: sdkLogger }
+          : { logger: sdkLogger },
       });
 
       logger.info(`Pulling secret '${secretId}' from AWS Secrets Manager...`);
