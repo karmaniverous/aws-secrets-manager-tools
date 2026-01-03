@@ -1,0 +1,11 @@
+{
+  "rootOptionDefaults": {
+    "paths": ["smoke/fixtures/aws-secrets"]
+  },
+  "plugins": {
+    "aws": {
+      "profile": "$SMOKE_AWS_PROFILE",
+      "loginOnDemand": true
+    }
+  }
+}

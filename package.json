@@ -136,6 +136,8 @@
     "knip": "knip",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
+    "smoke:flags": "tsx ./smoke/aws-secrets-cli-flags.ts",
+    "smoke:overlay": "tsx ./smoke/aws-secrets-config-overlay.ts",
     "release": "dotenvx run -f .env.local -- release-it",
     "release:pre": "dotenvx run -f .env.local -- release-it --no-git.requireBranch --github.prerelease --preRelease",
     "test": "vitest run",
