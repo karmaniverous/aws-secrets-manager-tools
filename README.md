@@ -96,3 +96,7 @@ If you embed the plugin in your own get-dotenv host (or use the shipped CLI), yo
 ```
 
 See the [secrets plugin guide](guides/secrets-plugin.md) for `--from` / `--to` selector details and all supported config keys.
+
+---
+
+Built for you with ❤️ on Bali! Find more great tools & templates on [my GitHub Profile](https://github.com/karmaniverous).
