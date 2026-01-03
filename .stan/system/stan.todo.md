@@ -33,4 +33,4 @@
 - Committed smoke fixtures and smoke/.env defaults (optional .env.local).
 - Fixed smoke harness TS/lint regressions.
 - Fixed smoke spawn EINVAL (env + tsx entrypoint).
-- Refactored aws secrets CLI/plugin typing to use get-dotenv public types + schema-typed config (no casts).
+- Refactored aws secrets CLI/plugin typing to use get-dotenv public types + schema-typed config (no casts).- Fixed command option inference + smoke env lint (no delete).

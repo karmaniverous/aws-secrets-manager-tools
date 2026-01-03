@@ -41,130 +41,126 @@ export const registerPullCommand = ({
       'Update local dotenv from a Secrets Manager secret (env-map).',
     );
 
-  pull.addOption(
-    plugin.createPluginDynamicOption(
-      pull,
-      '-s, --secret-name <string>',
-      (_helpCfg, pluginCfg) =>
-        `secret name (supports $VAR expansion) (default: ${pluginCfg.secretName ?? '$STACK_NAME'})`,
-    ),
-  );
-
-  pull.addOption(
-    plugin.createPluginDynamicOption(
-      pull,
-      '-t, --template-extension <string>',
-      (_helpCfg, pluginCfg) => {
-        const def = pluginCfg.templateExtension ?? 'template';
-        return `dotenv template extension used when target file is missing (default: ${def})`;
-      },
-    ),
-  );
-
-  pull.addOption(
-    plugin.createPluginDynamicOption(
-      pull,
-      '--to <scope:privacy>',
-      (_helpCfg, pluginCfg) => {
-        const def = pluginCfg.pull?.to ?? 'env:private';
-        return `destination dotenv selector (global|env):(public|private) (default: ${def})`;
-      },
-    ),
-  );
-
-  pull.addOption(
-    plugin
-      .createPluginDynamicOption(
+  pull
+    .addOption(
+      plugin.createPluginDynamicOption(
         pull,
-        '-e, --exclude <strings...>',
-        (_helpCfg, pluginCfg) => {
-          const { excludeDefault } = describeConfigKeyListDefaults({
-            cfgInclude: pluginCfg.pull?.include,
-            cfgExclude: pluginCfg.pull?.exclude,
-          });
-          return `space-delimited list of keys to exclude from the pulled secret (default: ${excludeDefault})`;
-        },
-      )
-      .conflicts('include'),
-  );
-
-  pull.addOption(
-    plugin
-      .createPluginDynamicOption(
+        '-s, --secret-name <string>',
+        (_helpCfg, pluginCfg) =>
+          `secret name (supports $VAR expansion) (default: ${pluginCfg.secretName ?? '$STACK_NAME'})`,
+      ),
+    )
+    .addOption(
+      plugin.createPluginDynamicOption(
         pull,
-        '-i, --include <strings...>',
+        '-t, --template-extension <string>',
         (_helpCfg, pluginCfg) => {
-          const { includeDefault } = describeConfigKeyListDefaults({
-            cfgInclude: pluginCfg.pull?.include,
-            cfgExclude: pluginCfg.pull?.exclude,
-          });
-          return `space-delimited list of keys to include from the pulled secret (default: ${includeDefault})`;
+          const def = pluginCfg.templateExtension ?? 'template';
+          return `dotenv template extension used when target file is missing (default: ${def})`;
         },
-      )
-      .conflicts('exclude'),
-  );
+      ),
+    )
+    .addOption(
+      plugin.createPluginDynamicOption(
+        pull,
+        '--to <scope:privacy>',
+        (_helpCfg, pluginCfg) => {
+          const def = pluginCfg.pull?.to ?? 'env:private';
+          return `destination dotenv selector (global|env):(public|private) (default: ${def})`;
+        },
+      ),
+    )
+    .addOption(
+      plugin
+        .createPluginDynamicOption(
+          pull,
+          '-e, --exclude <strings...>',
+          (_helpCfg, pluginCfg) => {
+            const { excludeDefault } = describeConfigKeyListDefaults({
+              cfgInclude: pluginCfg.pull?.include,
+              cfgExclude: pluginCfg.pull?.exclude,
+            });
+            return `space-delimited list of keys to exclude from the pulled secret (default: ${excludeDefault})`;
+          },
+        )
+        .conflicts('include'),
+    )
+    .addOption(
+      plugin
+        .createPluginDynamicOption(
+          pull,
+          '-i, --include <strings...>',
+          (_helpCfg, pluginCfg) => {
+            const { includeDefault } = describeConfigKeyListDefaults({
+              cfgInclude: pluginCfg.pull?.include,
+              cfgExclude: pluginCfg.pull?.exclude,
+            });
+            return `space-delimited list of keys to include from the pulled secret (default: ${includeDefault})`;
+          },
+        )
+        .conflicts('exclude'),
+    )
+    .action(async function (opts, command) {
+      const logger = console;
+      const ctx = this.getCtx();
+      const bag = readMergedOptions(command);
+      const rootOpts = getDotenvCliOptions2Options(bag);
+      const cfg = plugin.readConfig(command);
 
-  pull.action(async function (opts, command) {
-    const logger = console;
-    const ctx = this.getCtx();
-    const bag = readMergedOptions(command);
-    const rootOpts = getDotenvCliOptions2Options(bag);
-    const cfg = plugin.readConfig(command);
+      const paths = rootOpts.paths ?? ['./'];
+      const dotenvToken = rootOpts.dotenvToken ?? '.env';
+      const privateToken = rootOpts.privateToken ?? 'local';
 
-    const paths = rootOpts.paths ?? ['./'];
-    const dotenvToken = rootOpts.dotenvToken ?? '.env';
-    const privateToken = rootOpts.privateToken ?? 'local';
+      const toRaw = opts.to ?? cfg.pull?.to ?? 'env:private';
+      const to = parseToSelector(toRaw);
 
-    const toRaw = opts.to ?? cfg.pull?.to ?? 'env:private';
-    const to = parseToSelector(toRaw);
+      const envRef = buildExpansionEnv(ctx.dotenv);
+      const secretNameRaw = opts.secretName ?? cfg.secretName ?? '$STACK_NAME';
+      const secretId = expandSecretName(secretNameRaw, envRef);
+      if (!secretId) throw new Error('secret-name is required.');
 
-    const envRef = buildExpansionEnv(ctx.dotenv);
-    const secretNameRaw = opts.secretName ?? cfg.secretName ?? '$STACK_NAME';
-    const secretId = expandSecretName(secretNameRaw, envRef);
-    if (!secretId) throw new Error('secret-name is required.');
+      const region = getAwsRegion(ctx);
+      const tools = await AwsSecretsManagerTools.init({
+        clientConfig: region ? { region, logger } : { logger },
+      });
 
-    const region = getAwsRegion(ctx);
-    const tools = await AwsSecretsManagerTools.init({
-      clientConfig: region ? { region, logger } : { logger },
+      logger.info(`Pulling secret '${secretId}' from AWS Secrets Manager...`);
+      const rawSecrets = await tools.readEnvSecret({ secretId });
+
+      const { include, exclude } = resolveIncludeExclude({
+        cliInclude: opts.include,
+        cliExclude: opts.exclude,
+        cfgInclude: cfg.pull?.include,
+        cfgExclude: cfg.pull?.exclude,
+      });
+      const secrets = applyIncludeExclude(rawSecrets, { include, exclude });
+
+      const templateExtension =
+        opts.templateExtension ?? cfg.templateExtension ?? 'template';
+
+      const editCommon = {
+        paths,
+        dotenvToken,
+        privateToken,
+        privacy: to.privacy,
+        templateExtension,
+      };
+
+      const res =
+        to.scope === 'env'
+          ? await editDotenvFile(secrets, {
+              ...editCommon,
+              scope: 'env',
+              env: requireString(
+                bag.env ?? bag.defaultEnv,
+                'env is required (use --env or defaultEnv).',
+              ),
+            })
+          : await editDotenvFile(secrets, {
+              ...editCommon,
+              scope: 'global',
+            });
+
+      logger.info(`Updated ${res.path}`);
     });
-
-    logger.info(`Pulling secret '${secretId}' from AWS Secrets Manager...`);
-    const rawSecrets = await tools.readEnvSecret({ secretId });
-
-    const { include, exclude } = resolveIncludeExclude({
-      cliInclude: opts.include,
-      cliExclude: opts.exclude,
-      cfgInclude: cfg.pull?.include,
-      cfgExclude: cfg.pull?.exclude,
-    });
-    const secrets = applyIncludeExclude(rawSecrets, { include, exclude });
-
-    const templateExtension =
-      opts.templateExtension ?? cfg.templateExtension ?? 'template';
-
-    const editCommon = {
-      paths,
-      dotenvToken,
-      privateToken,
-      privacy: to.privacy,
-      templateExtension,
-    };
-
-    const res =
-      to.scope === 'env'
-        ? await editDotenvFile(secrets, {
-            ...editCommon,
-            scope: 'env',
-            env: requireString(
-              bag.env ?? bag.defaultEnv,
-              'env is required (use --env or defaultEnv).',
-            ),
-          })
-        : await editDotenvFile(secrets, {
-            ...editCommon,
-            scope: 'global',
-          });
-
-    logger.info(`Updated ${res.path}`);
-  });
 };

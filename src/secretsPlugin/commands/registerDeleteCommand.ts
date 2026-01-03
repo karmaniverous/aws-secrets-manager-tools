@@ -8,7 +8,6 @@
  */
 
 import { AwsSecretsManagerTools } from '../../secretsManager/AwsSecretsManagerTools';
-import {} from '../secretsPluginConfig';
 import { buildExpansionEnv, expandSecretName } from '../secretsUtils';
 import { getAwsRegion, toNumber } from './commandUtils';
 import type { SecretsPluginApi, SecretsPluginCli } from './types';
@@ -24,55 +23,55 @@ export const registerDeleteCommand = ({
     .ns('delete')
     .description('Delete a Secrets Manager secret (recoverable by default).');
 
-  del.addOption(
-    plugin.createPluginDynamicOption(
-      del,
-      '-s, --secret-name <string>',
-      (_helpCfg, pluginCfg) =>
-        `secret name (supports $VAR expansion) (default: ${pluginCfg.secretName ?? '$STACK_NAME'})`,
-    ),
-  );
-
   const delRecoveryOpt = del
     .createOption(
       '--recovery-window-days <number>',
       'recovery window in days (omit to use AWS default)',
     )
     .conflicts('force');
-  del.addOption(delRecoveryOpt);
 
   const delForceOpt = del
     .createOption('--force', 'force delete without recovery (DANGEROUS)')
     .conflicts('recoveryWindowDays')
     .default(false);
-  del.addOption(delForceOpt);
 
-  del.action(async function (opts) {
-    const logger = console;
-    const ctx = this.getCtx();
-    const cfg = plugin.readConfig(this);
+  del
+    .addOption(
+      plugin.createPluginDynamicOption(
+        del,
+        '-s, --secret-name <string>',
+        (_helpCfg, pluginCfg) =>
+          `secret name (supports $VAR expansion) (default: ${pluginCfg.secretName ?? '$STACK_NAME'})`,
+      ),
+    )
+    .addOption(delRecoveryOpt)
+    .addOption(delForceOpt)
+    .action(async function (opts) {
+      const logger = console;
+      const ctx = this.getCtx();
+      const cfg = plugin.readConfig(this);
 
-    const envRef = buildExpansionEnv(ctx.dotenv);
-    const secretNameRaw = opts.secretName ?? cfg.secretName ?? '$STACK_NAME';
-    const secretId = expandSecretName(secretNameRaw, envRef);
-    if (!secretId) throw new Error('secret-name is required.');
+      const envRef = buildExpansionEnv(ctx.dotenv);
+      const secretNameRaw = opts.secretName ?? cfg.secretName ?? '$STACK_NAME';
+      const secretId = expandSecretName(secretNameRaw, envRef);
+      if (!secretId) throw new Error('secret-name is required.');
 
-    const recoveryWindowInDays = toNumber(opts.recoveryWindowDays);
+      const recoveryWindowInDays = toNumber(opts.recoveryWindowDays);
 
-    const region = getAwsRegion(ctx);
-    const tools = await AwsSecretsManagerTools.init({
-      clientConfig: region ? { region, logger } : { logger },
+      const region = getAwsRegion(ctx);
+      const tools = await AwsSecretsManagerTools.init({
+        clientConfig: region ? { region, logger } : { logger },
+      });
+
+      logger.info(`Deleting secret '${secretId}' from AWS Secrets Manager...`);
+      await tools.deleteSecret({
+        secretId,
+        ...(opts.force
+          ? { forceDeleteWithoutRecovery: true }
+          : typeof recoveryWindowInDays === 'number'
+            ? { recoveryWindowInDays }
+            : {}),
+      });
+      logger.info('Done.');
     });
-
-    logger.info(`Deleting secret '${secretId}' from AWS Secrets Manager...`);
-    await tools.deleteSecret({
-      secretId,
-      ...(opts.force
-        ? { forceDeleteWithoutRecovery: true }
-        : typeof recoveryWindowInDays === 'number'
-          ? { recoveryWindowInDays }
-          : {}),
-    });
-    logger.info('Done.');
-  });
 };

@@ -121,15 +121,21 @@ const toChildProcessEnv = ({
   base: NodeJS.ProcessEnv;
   extra?: Record<string, string | undefined>;
 }): NodeJS.ProcessEnv => {
-  const out: NodeJS.ProcessEnv = { ...base };
-  if (!extra) return out;
+  const unset = new Set<string>();
+  const setEntries: Array<[string, string]> = [];
 
-  // child_process.spawn requires env values to be strings; drop undefined.
-  for (const [k, v] of Object.entries(extra)) {
-    if (typeof v === 'string') out[k] = v;
-    else delete out[k];
+  for (const [k, v] of Object.entries(extra ?? {})) {
+    if (typeof v === 'string') setEntries.push([k, v]);
+    else unset.add(k);
   }
-  return out;
+
+  const baseEntries: Array<[string, string]> = [];
+  for (const [k, v] of Object.entries(base)) {
+    if (typeof v === 'string' && !unset.has(k)) baseEntries.push([k, v]);
+  }
+
+  // child_process.spawn requires env values to be strings; we only emit strings.
+  return Object.fromEntries([...baseEntries, ...setEntries]);
 };
 
 const resolveTsxCliEntry = (): string => {

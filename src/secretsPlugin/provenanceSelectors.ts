@@ -148,26 +148,23 @@ export const matchesFromSelector = (
 ): boolean => {
   if (entry.kind !== sel.kind) return false;
 
-  if (sel.kind === 'vars') return true;
-
-  if (sel.kind === 'dynamic') {
-    const e = entry as DotenvProvenanceDynamicEntry;
-    return wildcardMatch(e.dynamicSource, sel.dynamicSource);
+  switch (sel.kind) {
+    case 'vars':
+      return true;
+    case 'dynamic':
+      return wildcardMatch(entry.dynamicSource, sel.dynamicSource);
+    case 'file':
+      return (
+        wildcardMatch(entry.scope, sel.scope) &&
+        wildcardMatch(entry.privacy, sel.privacy)
+      );
+    case 'config':
+      return (
+        wildcardMatch(entry.configScope, sel.configScope) &&
+        wildcardMatch(entry.scope, sel.scope) &&
+        wildcardMatch(entry.privacy, sel.privacy)
+      );
   }
-
-  if (sel.kind === 'file') {
-    const e = entry as DotenvProvenanceFileEntry;
-    return (
-      wildcardMatch(e.scope, sel.scope) && wildcardMatch(e.privacy, sel.privacy)
-    );
-  }
-
-  const e = entry as DotenvProvenanceConfigEntry;
-  return (
-    wildcardMatch(e.configScope, sel.configScope) &&
-    wildcardMatch(e.scope, sel.scope) &&
-    wildcardMatch(e.privacy, sel.privacy)
-  );
 };
 
 /**
