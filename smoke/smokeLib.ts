@@ -10,9 +10,12 @@
 import { spawn } from 'node:child_process';
 import crypto from 'node:crypto';
 import fs from 'node:fs/promises';
+import { createRequire } from 'node:module';
 import path from 'node:path';
 
 import { getDotenv } from '@karmaniverous/get-dotenv';
+
+const require = createRequire(import.meta.url);
 
 export type RunResult = {
   code: number;
@@ -111,6 +114,44 @@ export const runProcess = async ({
     });
   });
 
+const toChildProcessEnv = ({
+  base,
+  extra,
+}: {
+  base: NodeJS.ProcessEnv;
+  extra?: Record<string, string | undefined>;
+}): NodeJS.ProcessEnv => {
+  const out: NodeJS.ProcessEnv = { ...base };
+  if (!extra) return out;
+
+  // child_process.spawn requires env values to be strings; drop undefined.
+  for (const [k, v] of Object.entries(extra)) {
+    if (typeof v === 'string') out[k] = v;
+    else delete out[k];
+  }
+  return out;
+};
+
+const resolveTsxCliEntry = (): string => {
+  // Avoid spawning `tsx.cmd` on Windows; run the real CLI entry via node.
+  const candidates = [
+    'tsx/dist/cli.mjs',
+    'tsx/dist/cli.js',
+    'tsx/dist/cli.cjs',
+  ];
+
+  for (const spec of candidates) {
+    try {
+      return require.resolve(spec);
+    } catch {
+      // continue
+    }
+  }
+  throw new Error(
+    `Unable to resolve tsx CLI entry (tried: ${candidates.join(', ')})`,
+  );
+};
+
 export const loadSmokeEnv = async (
   repoRoot: string,
 ): Promise<Record<string, string | undefined>> => {
@@ -137,7 +178,7 @@ export const runAwsSecretsManagerToolsCli = async ({
   argv: string[];
   env?: Record<string, string | undefined>;
 }): Promise<RunResult> => {
-  const tsx = await resolveBin(repoRoot, 'tsx');
+  const tsxCli = resolveTsxCliEntry();
   const entry = path.resolve(
     repoRoot,
     'src/cli/aws-secrets-manager-tools/index.ts',
@@ -145,13 +186,12 @@ export const runAwsSecretsManagerToolsCli = async ({
 
   return await runProcess({
     cwd: repoRoot,
-    cmd: tsx,
-    args: [entry, ...argv],
-    env: {
-      ...process.env,
-      ...(env ?? {}),
-      NO_COLOR: '1',
-    },
+    cmd: process.execPath,
+    args: [tsxCli, entry, ...argv],
+    env: toChildProcessEnv({
+      base: { ...process.env, NO_COLOR: '1' },
+      extra: env,
+    }),
   });
 };
 

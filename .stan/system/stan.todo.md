@@ -30,4 +30,6 @@
 - Removed `any` from command shim typing to satisfy lint.
 - Fixed command action typing (unknown args + internal casts).
 - Added tsx smoke scripts (overlay + CLI flags).
-- Committed smoke fixtures and smoke/.env defaults (optional .env.local).- Fixed smoke harness TS/lint regressions.
+- Committed smoke fixtures and smoke/.env defaults (optional .env.local).
+- Fixed smoke harness TS/lint regressions.
+- Fixed smoke spawn EINVAL (env + tsx entrypoint).
