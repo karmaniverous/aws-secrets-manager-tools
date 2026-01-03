@@ -42,4 +42,5 @@
 - Fixed smoke overlay config schema + added smoke progress logs.
 - Made smoke output concise by default (SMOKE_VERBOSE=1 for full logs).
 - Quieted AWS SDK logging by default; smoke logs now concise.
-- Documentation pass: rewrote README and added TypeDoc guides for AwsSecretsManagerTools and the aws secrets plugin.
+- Documentation pass: rewrote README and added TypeDoc guides for AwsSecretsManagerTools and the aws secrets plugin.
+- Synced the STAN assistant guide with the current API/CLI implementation.
