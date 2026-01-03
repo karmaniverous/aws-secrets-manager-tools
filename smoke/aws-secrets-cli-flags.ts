@@ -17,6 +17,7 @@ import {
   findRepoRoot,
   getAwsSecretsFixturePaths,
   loadSmokeEnv,
+  logCommandOk,
   makeSecretId,
   readDotenvFileMap,
   readText,
@@ -28,6 +29,8 @@ import {
 } from './smokeLib';
 
 const main = async (): Promise<void> => {
+  console.log('smoke:flags: starting...');
+
   const repoRoot = await findRepoRoot(process.cwd());
   const smokeEnv = await loadSmokeEnv(repoRoot);
   const profile = smokeEnv.SMOKE_AWS_PROFILE ?? 'JGS-SSO';
@@ -47,42 +50,40 @@ const main = async (): Promise<void> => {
     const awsArgs = ['aws', '--profile', profile, '--login-on-demand'];
 
     // Push: select only keys whose effective provenance is file:global:public
-    expectCommandOk(
-      await runAwsSecretsManagerToolsCli({
-        repoRoot,
-        env: smokeEnv,
-        argv: [
-          ...rootArgs,
-          ...awsArgs,
-          'secrets',
-          'push',
-          '-s',
-          secretId,
-          '--from',
-          'file:global:public',
-        ],
-      }),
-      'cli-flags: push',
-    );
+    const pushRes = await runAwsSecretsManagerToolsCli({
+      repoRoot,
+      env: smokeEnv,
+      argv: [
+        ...rootArgs,
+        ...awsArgs,
+        'secrets',
+        'push',
+        '-s',
+        secretId,
+        '--from',
+        'file:global:public',
+      ],
+    });
+    expectCommandOk(pushRes, 'cli-flags: push');
+    logCommandOk(pushRes, 'cli-flags: push');
 
     // Pull into global:private -> .env.local (bootstrapped from template)
-    expectCommandOk(
-      await runAwsSecretsManagerToolsCli({
-        repoRoot,
-        env: smokeEnv,
-        argv: [
-          ...rootArgs,
-          ...awsArgs,
-          'secrets',
-          'pull',
-          '-s',
-          secretId,
-          '--to',
-          'global:private',
-        ],
-      }),
-      'cli-flags: pull',
-    );
+    const pullRes = await runAwsSecretsManagerToolsCli({
+      repoRoot,
+      env: smokeEnv,
+      argv: [
+        ...rootArgs,
+        ...awsArgs,
+        'secrets',
+        'pull',
+        '-s',
+        secretId,
+        '--to',
+        'global:private',
+      ],
+    });
+    expectCommandOk(pullRes, 'cli-flags: pull');
+    logCommandOk(pullRes, 'cli-flags: pull');
 
     const localText = await readText(fixtures.localAbs);
     assertContains(
@@ -99,22 +100,21 @@ const main = async (): Promise<void> => {
     }
 
     // Delete without recovery
-    expectCommandOk(
-      await runAwsSecretsManagerToolsCli({
-        repoRoot,
-        env: smokeEnv,
-        argv: [
-          ...rootArgs,
-          ...awsArgs,
-          'secrets',
-          'delete',
-          '-s',
-          secretId,
-          '--force',
-        ],
-      }),
-      'cli-flags: delete',
-    );
+    const delRes = await runAwsSecretsManagerToolsCli({
+      repoRoot,
+      env: smokeEnv,
+      argv: [
+        ...rootArgs,
+        ...awsArgs,
+        'secrets',
+        'delete',
+        '-s',
+        secretId,
+        '--force',
+      ],
+    });
+    expectCommandOk(delRes, 'cli-flags: delete');
+    logCommandOk(delRes, 'cli-flags: delete');
 
     // Pull should now fail (secret missing)
     expectCommandFail(
@@ -137,6 +137,8 @@ const main = async (): Promise<void> => {
   } finally {
     if (!keepArtifacts) await rmrf(fixtures.localAbs);
   }
+
+  console.log('smoke:flags: done.');
 };
 
 await main();

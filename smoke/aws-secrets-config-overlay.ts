@@ -20,6 +20,7 @@ import {
   findRepoRoot,
   getAwsSecretsFixturePaths,
   loadSmokeEnv,
+  logCommandOk,
   makeSecretId,
   mkdirp,
   readText,
@@ -101,6 +102,8 @@ const withConfigOverlay = async <T>(
 };
 
 const main = async (): Promise<void> => {
+  console.log('smoke:overlay: starting...');
+
   const repoRoot = await findRepoRoot(process.cwd());
   const smokeEnv = await loadSmokeEnv(repoRoot);
   const keepArtifacts = shouldKeepArtifacts(smokeEnv);
@@ -115,39 +118,37 @@ const main = async (): Promise<void> => {
 
     await withConfigOverlay(repoRoot, smokeEnv, async () => {
       // No root flags and no aws flags: config overlay should supply both.
-      expectCommandOk(
-        await runAwsSecretsManagerToolsCli({
-          repoRoot,
-          env: smokeEnv,
-          argv: [
-            'aws',
-            'secrets',
-            'push',
-            '-s',
-            secretId,
-            '--from',
-            'file:global:public',
-          ],
-        }),
-        'config-overlay: push',
-      );
+      const pushRes = await runAwsSecretsManagerToolsCli({
+        repoRoot,
+        env: smokeEnv,
+        argv: [
+          'aws',
+          'secrets',
+          'push',
+          '-s',
+          secretId,
+          '--from',
+          'file:global:public',
+        ],
+      });
+      expectCommandOk(pushRes, 'config-overlay: push');
+      logCommandOk(pushRes, 'config-overlay: push');
 
-      expectCommandOk(
-        await runAwsSecretsManagerToolsCli({
-          repoRoot,
-          env: smokeEnv,
-          argv: [
-            'aws',
-            'secrets',
-            'pull',
-            '-s',
-            secretId,
-            '--to',
-            'global:private',
-          ],
-        }),
-        'config-overlay: pull',
-      );
+      const pullRes = await runAwsSecretsManagerToolsCli({
+        repoRoot,
+        env: smokeEnv,
+        argv: [
+          'aws',
+          'secrets',
+          'pull',
+          '-s',
+          secretId,
+          '--to',
+          'global:private',
+        ],
+      });
+      expectCommandOk(pullRes, 'config-overlay: pull');
+      logCommandOk(pullRes, 'config-overlay: pull');
 
       const localText = await readText(fixtures.localAbs);
       assertContains(
@@ -167,14 +168,13 @@ const main = async (): Promise<void> => {
         );
       }
 
-      expectCommandOk(
-        await runAwsSecretsManagerToolsCli({
-          repoRoot,
-          env: smokeEnv,
-          argv: ['aws', 'secrets', 'delete', '-s', secretId, '--force'],
-        }),
-        'config-overlay: delete',
-      );
+      const delRes = await runAwsSecretsManagerToolsCli({
+        repoRoot,
+        env: smokeEnv,
+        argv: ['aws', 'secrets', 'delete', '-s', secretId, '--force'],
+      });
+      expectCommandOk(delRes, 'config-overlay: delete');
+      logCommandOk(delRes, 'config-overlay: delete');
 
       expectCommandFail(
         await runAwsSecretsManagerToolsCli({
@@ -196,6 +196,8 @@ const main = async (): Promise<void> => {
   } finally {
     if (!keepArtifacts) await rmrf(fixtures.localAbs);
   }
+
+  console.log('smoke:overlay: done.');
 };
 
 await main();

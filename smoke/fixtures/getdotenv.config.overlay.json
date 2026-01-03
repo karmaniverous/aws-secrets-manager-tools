@@ -1,6 +1,6 @@
 {
   "rootOptionDefaults": {
-    "paths": ["smoke/fixtures/aws-secrets"]
+    "paths": "smoke/fixtures/aws-secrets"
   },
   "plugins": {
     "aws": {

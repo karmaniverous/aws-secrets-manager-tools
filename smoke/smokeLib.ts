@@ -251,6 +251,9 @@ export const assertSmokeFixturesPresent = async ({
   );
 };
 
+const clip = (s: string, limit = 8_000): string =>
+  s.length > limit ? `${s.slice(0, limit)}\n[truncated]` : s;
+
 export const expectCommandOk = (res: RunResult, label: string): void => {
   if (res.code === 0) return;
   throw new Error(
@@ -267,4 +270,15 @@ export const expectCommandFail = (res: RunResult, label: string): void => {
       `--- stdout ---\n${res.stdout}\n` +
       `--- stderr ---\n${res.stderr}\n`,
   );
+};
+
+export const logCommandOk = (res: RunResult, label: string): void => {
+  // Keep smoke runs visibly “alive” without spamming on empty output.
+  console.log(`${label}: ok`);
+  if (res.stdout.trim()) {
+    console.log(`--- stdout ---\n${clip(res.stdout)}`);
+  }
+  if (res.stderr.trim()) {
+    console.log(`--- stderr ---\n${clip(res.stderr)}`);
+  }
 };
