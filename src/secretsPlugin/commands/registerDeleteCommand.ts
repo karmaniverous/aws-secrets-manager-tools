@@ -8,40 +8,28 @@
  */
 
 import { AwsSecretsManagerTools } from '../../secretsManager/AwsSecretsManagerTools';
-import { coerceSecretsPluginConfig } from '../secretsPluginConfig';
+import {} from '../secretsPluginConfig';
 import { buildExpansionEnv, expandSecretName } from '../secretsUtils';
-import { toNumber } from './commandUtils';
+import { getAwsRegion, toNumber } from './commandUtils';
 import type { SecretsPluginApi, SecretsPluginCli } from './types';
-
-type DeleteOpts = {
-  secretName?: string;
-  recoveryWindowDays?: string;
-  force?: boolean;
-};
 
 export const registerDeleteCommand = ({
   cli,
   plugin,
 }: {
-  cli: unknown;
-  plugin: unknown;
+  cli: SecretsPluginCli;
+  plugin: SecretsPluginApi;
 }): void => {
-  const c = cli as SecretsPluginCli;
-  const p = plugin as SecretsPluginApi;
-
-  const del = c
-    .command('delete')
+  const del = cli
+    .ns('delete')
     .description('Delete a Secrets Manager secret (recoverable by default).');
 
   del.addOption(
-    p.createPluginDynamicOption(
+    plugin.createPluginDynamicOption(
       del,
       '-s, --secret-name <string>',
-      (_helpCfg, pluginCfg) => {
-        const cfg = coerceSecretsPluginConfig(pluginCfg);
-        const def = cfg.secretName ?? '$STACK_NAME';
-        return `secret name (supports $VAR expansion) (default: ${def})`;
-      },
+      (_helpCfg, pluginCfg) =>
+        `secret name (supports $VAR expansion) (default: ${pluginCfg.secretName ?? '$STACK_NAME'})`,
     ),
   );
 
@@ -59,12 +47,10 @@ export const registerDeleteCommand = ({
     .default(false);
   del.addOption(delForceOpt);
 
-  del.action(async (...args: unknown[]) => {
-    const [opts] = args as [DeleteOpts];
-
+  del.action(async function (opts) {
     const logger = console;
-    const ctx = c.getCtx();
-    const cfg = coerceSecretsPluginConfig(p.readConfig(c));
+    const ctx = this.getCtx();
+    const cfg = plugin.readConfig(this);
 
     const envRef = buildExpansionEnv(ctx.dotenv);
     const secretNameRaw = opts.secretName ?? cfg.secretName ?? '$STACK_NAME';
@@ -73,7 +59,7 @@ export const registerDeleteCommand = ({
 
     const recoveryWindowInDays = toNumber(opts.recoveryWindowDays);
 
-    const region = ctx.plugins?.aws?.region;
+    const region = getAwsRegion(ctx);
     const tools = await AwsSecretsManagerTools.init({
       clientConfig: region ? { region, logger } : { logger },
     });

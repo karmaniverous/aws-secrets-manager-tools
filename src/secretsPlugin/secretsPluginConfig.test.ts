@@ -1,13 +1,13 @@
 import { describe, expect, it } from 'vitest';
 
 import {
-  coerceSecretsPluginConfig,
   resolveIncludeExclude,
+  secretsPluginConfigSchema,
 } from './secretsPluginConfig';
 
 describe('secretsPluginConfig', () => {
-  it('coerces safe plugin config fields', () => {
-    const cfg = coerceSecretsPluginConfig({
+  it('parses safe plugin config fields via schema', () => {
+    const cfg = secretsPluginConfigSchema.parse({
       secretName: 'x',
       templateExtension: 'template',
       push: { from: ['file:env:private'], include: ['A'] },
@@ -16,6 +16,14 @@ describe('secretsPluginConfig', () => {
     expect(cfg.secretName).toBe('x');
     expect(cfg.push?.from).toEqual(['file:env:private']);
     expect(cfg.pull?.to).toBe('env:private');
+  });
+
+  it('ignores unknown keys via schema (strip default)', () => {
+    const cfg = secretsPluginConfigSchema.parse({
+      secretName: 'x',
+      unknownKey: 'nope',
+    });
+    expect(Object.prototype.hasOwnProperty.call(cfg, 'unknownKey')).toBe(false);
   });
 
   it('CLI include overrides config exclude (and config is ignored)', () => {

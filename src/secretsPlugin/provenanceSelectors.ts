@@ -9,44 +9,31 @@
  *   - vars
  * - `pull` uses `--to <scope>:<privacy>` (scope: global|env; privacy: public|private).
  * - No path-based selector matching is supported.
+ * - Provenance entry shapes are sourced from get-dotenv’s public ctx types.
  */
+
+import type { GetDotenvCliCtx } from '@karmaniverous/get-dotenv/cliHost';
 
 import type { EnvSecretMap } from '../secretsManager/envSecretMap';
 
-export type DotenvProvenanceEntry = {
-  kind: 'file';
-  scope: 'global' | 'env';
-  privacy: 'public' | 'private';
-  path?: string;
-  op?: 'unset';
-};
-
-export type DotenvProvenanceConfigEntry = {
-  kind: 'config';
-  configScope: 'packaged' | 'project';
-  scope: 'global' | 'env';
-  privacy: 'public' | 'private';
-  op?: 'unset';
-};
-
-export type DotenvProvenanceVarsEntry = {
-  kind: 'vars';
-  op?: 'unset';
-};
-
-export type DotenvProvenanceDynamicEntry = {
-  kind: 'dynamic';
-  dynamicSource: 'config' | 'programmatic' | 'dynamicPath';
-  op?: 'unset';
-};
-
-export type DotenvProvenanceAnyEntry =
-  | DotenvProvenanceEntry
-  | DotenvProvenanceConfigEntry
-  | DotenvProvenanceVarsEntry
-  | DotenvProvenanceDynamicEntry;
-
-export type DotenvProvenance = Record<string, DotenvProvenanceAnyEntry[]>;
+export type DotenvProvenance = GetDotenvCliCtx['dotenvProvenance'];
+export type DotenvProvenanceAnyEntry = DotenvProvenance[string][number];
+export type DotenvProvenanceFileEntry = Extract<
+  DotenvProvenanceAnyEntry,
+  { kind: 'file' }
+>;
+export type DotenvProvenanceConfigEntry = Extract<
+  DotenvProvenanceAnyEntry,
+  { kind: 'config' }
+>;
+export type DotenvProvenanceVarsEntry = Extract<
+  DotenvProvenanceAnyEntry,
+  { kind: 'vars' }
+>;
+export type DotenvProvenanceDynamicEntry = Extract<
+  DotenvProvenanceAnyEntry,
+  { kind: 'dynamic' }
+>;
 
 export type FromSelector =
   | {
@@ -169,7 +156,7 @@ export const matchesFromSelector = (
   }
 
   if (sel.kind === 'file') {
-    const e = entry as DotenvProvenanceEntry;
+    const e = entry as DotenvProvenanceFileEntry;
     return (
       wildcardMatch(e.scope, sel.scope) && wildcardMatch(e.privacy, sel.privacy)
     );

@@ -7,6 +7,9 @@ stan-core:
     '@commander-js/extra-typings':
       - node_modules/@commander-js/extra-typings/index.d.ts
     '@karmaniverous/get-dotenv':
+      - ./node_modules/@karmaniverous/get-dotenv/dist/cliHost.d.ts
+      - ./node_modules/@karmaniverous/get-dotenv/dist/env-overlay.d.ts
+      - ./node_modules/@karmaniverous/get-dotenv/dist/index.d.ts
       - ../get-dotenv/.stan/interop/aws-secrets-manager-tools/**
       - ../get-dotenv/guides/stan-assistant-guide/**
   includes: []

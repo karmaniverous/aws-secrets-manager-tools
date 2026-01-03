@@ -1,65 +1,33 @@
 /**
  * Requirements addressed:
- * - Support safe plugin defaults from get-dotenv config under `plugins['aws/secrets']`.
+ * - Support safe plugin defaults from get-dotenv config under `plugins['aws/secrets']`
+ *   using a schema-typed config (no casts required at call sites).
  * - CLI flags override config defaults.
  * - include/exclude are mutually exclusive; unknown keys are ignored at filter time.
  */
 
-export type SecretsPluginConfig = {
-  secretName?: string;
-  templateExtension?: string;
-  push?: {
-    from?: string[];
-    include?: string[];
-    exclude?: string[];
-  };
-  pull?: {
-    to?: string;
-    include?: string[];
-    exclude?: string[];
-  };
-};
+import { z } from '@karmaniverous/get-dotenv/cliHost';
 
-const isStringArray = (v: unknown): v is string[] =>
-  Array.isArray(v) && v.every((x) => typeof x === 'string');
+export const secretsPluginConfigSchema = z.object({
+  secretName: z.string().optional(),
+  templateExtension: z.string().optional(),
+  push: z
+    .object({
+      from: z.array(z.string()).optional(),
+      include: z.array(z.string()).optional(),
+      exclude: z.array(z.string()).optional(),
+    })
+    .optional(),
+  pull: z
+    .object({
+      to: z.string().optional(),
+      include: z.array(z.string()).optional(),
+      exclude: z.array(z.string()).optional(),
+    })
+    .optional(),
+});
 
-const readObj = (v: unknown): Record<string, unknown> | undefined =>
-  v && typeof v === 'object' && !Array.isArray(v)
-    ? (v as Record<string, unknown>)
-    : undefined;
-
-export const coerceSecretsPluginConfig = (v: unknown): SecretsPluginConfig => {
-  const o = readObj(v);
-  if (!o) return {};
-
-  const push = readObj(o.push);
-  const pull = readObj(o.pull);
-
-  return {
-    ...(typeof o.secretName === 'string' ? { secretName: o.secretName } : {}),
-    ...(typeof o.templateExtension === 'string'
-      ? { templateExtension: o.templateExtension }
-      : {}),
-    ...(push
-      ? {
-          push: {
-            ...(isStringArray(push.from) ? { from: push.from } : {}),
-            ...(isStringArray(push.include) ? { include: push.include } : {}),
-            ...(isStringArray(push.exclude) ? { exclude: push.exclude } : {}),
-          },
-        }
-      : {}),
-    ...(pull
-      ? {
-          pull: {
-            ...(typeof pull.to === 'string' ? { to: pull.to } : {}),
-            ...(isStringArray(pull.include) ? { include: pull.include } : {}),
-            ...(isStringArray(pull.exclude) ? { exclude: pull.exclude } : {}),
-          },
-        }
-      : {}),
-  };
-};
+export type SecretsPluginConfig = z.output<typeof secretsPluginConfigSchema>;
 
 export const resolveIncludeExclude = ({
   cliInclude,

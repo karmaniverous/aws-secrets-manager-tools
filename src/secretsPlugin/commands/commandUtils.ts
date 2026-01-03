@@ -3,6 +3,7 @@
  * - Enforce AWS Secrets Manager SecretString size limits (65,536 bytes).
  * - Provide safe parsing helpers for CLI-mapped inputs.
  * - Render config-derived defaults in dynamic option help text.
+ * - Access aws plugin ctx state via runtime narrowing (no casts).
  */
 
 import { Buffer } from 'node:buffer';
@@ -33,6 +34,19 @@ export const describeDefault = (v: unknown): string => {
   if (Array.isArray(v)) return v.length ? v.join(' ') : 'none';
   if (typeof v === 'string' && v.trim()) return v;
   return 'none';
+};
+
+const isRecord = (v: unknown): v is Record<string, unknown> =>
+  typeof v === 'object' && v !== null;
+
+export const getAwsRegion = (ctx: {
+  plugins?: unknown;
+}): string | undefined => {
+  if (!isRecord(ctx.plugins)) return;
+  const aws = ctx.plugins['aws'];
+  if (!isRecord(aws)) return;
+  const region = aws['region'];
+  return typeof region === 'string' ? region : undefined;
 };
 
 export const describeConfigKeyListDefaults = ({

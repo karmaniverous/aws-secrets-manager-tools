@@ -15,6 +15,7 @@ import { definePlugin } from '@karmaniverous/get-dotenv/cliHost';
 import { registerDeleteCommand } from './commands/registerDeleteCommand';
 import { registerPullCommand } from './commands/registerPullCommand';
 import { registerPushCommand } from './commands/registerPushCommand';
+import { secretsPluginConfigSchema } from './secretsPluginConfig';
 
 /**
  * get-dotenv plugin that provides `aws secrets pull|push|delete`.
@@ -24,6 +25,7 @@ import { registerPushCommand } from './commands/registerPushCommand';
 export const secretsPlugin = () => {
   const plugin = definePlugin({
     ns: 'secrets',
+    configSchema: secretsPluginConfigSchema,
     setup(cli) {
       cli.description('AWS Secrets Manager helpers (env-map secrets).');
       registerPullCommand({ cli, plugin });

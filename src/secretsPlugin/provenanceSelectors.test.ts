@@ -58,18 +58,65 @@ describe('provenanceSelectors', () => {
     const dotenv = { A: '1', B: '2', C: '3', D: undefined };
     const provenance: DotenvProvenance = {
       // Effective: file env private -> included by default selector
-      A: [{ kind: 'file', scope: 'env', privacy: 'private' }],
+      A: [
+        {
+          kind: 'file',
+          op: 'set',
+          scope: 'env',
+          privacy: 'private',
+          env: 'dev',
+          path: './',
+          file: '.env.dev.local',
+        },
+      ],
       // Effective: dynamic -> excluded by default selector
       B: [
-        { kind: 'file', scope: 'env', privacy: 'private' },
-        { kind: 'dynamic', dynamicSource: 'config' },
+        {
+          kind: 'file',
+          op: 'set',
+          scope: 'env',
+          privacy: 'private',
+          env: 'dev',
+          path: './',
+          file: '.env.dev.local',
+        },
+        { kind: 'dynamic', op: 'set', dynamicSource: 'config' },
       ],
       // Effective: file global private -> excluded by default selector
-      C: [{ kind: 'file', scope: 'global', privacy: 'private' }],
+      C: [
+        {
+          kind: 'file',
+          op: 'set',
+          scope: 'global',
+          privacy: 'private',
+          path: './',
+          file: '.env.local',
+        },
+      ],
       // Undefined values are ignored
-      D: [{ kind: 'file', scope: 'env', privacy: 'private' }],
+      D: [
+        {
+          kind: 'file',
+          op: 'set',
+          scope: 'env',
+          privacy: 'private',
+          env: 'dev',
+          path: './',
+          file: '.env.dev.local',
+        },
+      ],
       // Unset effective entry is ignored
-      E: [{ kind: 'file', scope: 'env', privacy: 'private', op: 'unset' }],
+      E: [
+        {
+          kind: 'file',
+          op: 'unset',
+          scope: 'env',
+          privacy: 'private',
+          env: 'dev',
+          path: './',
+          file: '.env.dev.local',
+        },
+      ],
     };
 
     const selected = selectEnvByProvenance(dotenv, provenance, [
