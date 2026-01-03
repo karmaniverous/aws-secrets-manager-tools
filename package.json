@@ -127,7 +127,7 @@
     "url": "git+https://github.com/karmaniverous/aws-secrets-manager-tools.git"
   },
   "scripts": {
-    "build": "rimraf dist && getdotenv -a -v NO_COLOR=1 cmd rollup --config rollup.config.ts --configPlugin @rollup/plugin-typescript",
+    "build": "rimraf dist && getdotenv -a -v NO_COLOR=1 cmd tsx ./node_modules/rollup/dist/bin/rollup --config rollup.config.ts",
     "cli": "tsx ./src/cli/aws-secrets-manager-tools/index.ts",
     "changelog": "auto-changelog",
     "docs": "typedoc",

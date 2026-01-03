@@ -91,8 +91,8 @@ const commonInputOptions: InputOptions = {
 /**
  * Discover CLI commands under src/cli.
  *
- * Keep this synchronous so Rollup can load a TS config via `--configPlugin`
- * without relying on top-level await semantics in the transpiled output.
+ * Keep this synchronous so the Rollup CLI can load this TS config
+ * deterministically (we run Rollup under `tsx` in npm scripts).
  */
 let cliCommands: string[] = [];
 try {
