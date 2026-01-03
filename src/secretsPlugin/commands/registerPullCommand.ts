@@ -100,12 +100,12 @@ export const registerPullCommand = ({
         )
         .conflicts('exclude'),
     )
-    .action(async function (opts, command) {
+    .action(async (opts, command) => {
       const logger = console;
-      const ctx = this.getCtx();
+      const ctx = cli.getCtx();
       const bag = readMergedOptions(command);
       const rootOpts = getDotenvCliOptions2Options(bag);
-      const cfg = plugin.readConfig(command);
+      const cfg = plugin.readConfig(pull);
 
       const paths = rootOpts.paths ?? ['./'];
       const dotenvToken = rootOpts.dotenvToken ?? '.env';

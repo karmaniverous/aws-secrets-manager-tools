@@ -97,10 +97,10 @@ export const registerPushCommand = ({
         )
         .conflicts('exclude'),
     )
-    .action(async function (opts) {
+    .action(async (opts) => {
       const logger = console;
-      const ctx = this.getCtx();
-      const cfg = plugin.readConfig(this);
+      const ctx = cli.getCtx();
+      const cfg = plugin.readConfig(push);
 
       const fromRaw = opts.from?.length
         ? opts.from

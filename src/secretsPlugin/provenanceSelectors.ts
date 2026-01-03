@@ -146,20 +146,23 @@ export const matchesFromSelector = (
   entry: DotenvProvenanceAnyEntry,
   sel: FromSelector,
 ): boolean => {
-  if (entry.kind !== sel.kind) return false;
-
-  switch (sel.kind) {
+  switch (entry.kind) {
     case 'vars':
-      return true;
+      return sel.kind === 'vars';
     case 'dynamic':
-      return wildcardMatch(entry.dynamicSource, sel.dynamicSource);
+      return (
+        sel.kind === 'dynamic' &&
+        wildcardMatch(entry.dynamicSource, sel.dynamicSource)
+      );
     case 'file':
       return (
+        sel.kind === 'file' &&
         wildcardMatch(entry.scope, sel.scope) &&
         wildcardMatch(entry.privacy, sel.privacy)
       );
     case 'config':
       return (
+        sel.kind === 'config' &&
         wildcardMatch(entry.configScope, sel.configScope) &&
         wildcardMatch(entry.scope, sel.scope) &&
         wildcardMatch(entry.privacy, sel.privacy)

@@ -46,10 +46,10 @@ export const registerDeleteCommand = ({
     )
     .addOption(delRecoveryOpt)
     .addOption(delForceOpt)
-    .action(async function (opts) {
+    .action(async (opts) => {
       const logger = console;
-      const ctx = this.getCtx();
-      const cfg = plugin.readConfig(this);
+      const ctx = cli.getCtx();
+      const cfg = plugin.readConfig(del);
 
       const envRef = buildExpansionEnv(ctx.dotenv);
       const secretNameRaw = opts.secretName ?? cfg.secretName ?? '$STACK_NAME';

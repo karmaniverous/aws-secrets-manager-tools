@@ -14,5 +14,4 @@ Project policies:
   - do not import or enable X-Ray capture unless `AWS_XRAY_DAEMON_ADDRESS` is set (X-Ray SDK will throw otherwise).
 - For CLI option conflicts, prefer Commander `.conflicts(...)` over manual runtime checks when possible.
 - For config-backed plugin options, use get-dotenv plugin dynamic options to show composed defaults in help output.
-
-If project requirements change, update `.stan/system/stan.requirements.md` and `.stan/system/stan.todo.md` together.
+- When integrating with get-dotenv, do not use type assertions; rely on get-dotenv’s public types and schema-typed plugin config, and use runtime type guards (not casts) to read unknown plugin state (e.g., `ctx.plugins.aws`). If project requirements change, update `.stan/system/stan.requirements.md` and `.stan/system/stan.todo.md` together.
