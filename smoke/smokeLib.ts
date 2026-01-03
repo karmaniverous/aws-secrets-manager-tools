@@ -169,11 +169,11 @@ export const getAwsSecretsFixturePaths = ({
   repoRoot,
 }: {
   repoRoot: string;
-}): Promise<{
+}): {
   envAbs: string;
   templateAbs: string;
   localAbs: string;
-}> => {
+} => {
   const dirAbs = path.resolve(repoRoot, SMOKE_AWS_SECRETS_FIXTURES_DIR_REL);
   const envAbs = path.join(dirAbs, '.env');
   const templateAbs = path.join(dirAbs, '.env.local.template');
@@ -206,7 +206,7 @@ export const assertSmokeFixturesPresent = async ({
 }: {
   repoRoot: string;
 }): Promise<void> => {
-  const { envAbs, templateAbs } = await getAwsSecretsFixturePaths({ repoRoot });
+  const { envAbs, templateAbs } = getAwsSecretsFixturePaths({ repoRoot });
   assert(await fileExists(envAbs), `Missing smoke fixture: ${envAbs}`);
   assert(
     await fileExists(templateAbs),

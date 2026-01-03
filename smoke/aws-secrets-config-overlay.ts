@@ -107,7 +107,7 @@ const main = async (): Promise<void> => {
   const secretId = makeSecretId();
 
   await assertSmokeFixturesPresent({ repoRoot });
-  const fixtures = await getAwsSecretsFixturePaths({ repoRoot });
+  const fixtures = getAwsSecretsFixturePaths({ repoRoot });
 
   try {
     // Ensure target does not exist before pull bootstraps it.
