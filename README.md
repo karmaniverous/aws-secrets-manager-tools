@@ -1,5 +1,7 @@
 # AWS Secrets Manager Tools
 
+[![npm version](https://img.shields.io/npm/v/@karmaniverous/aws-secrets-manager-tools.svg)](https://www.npmjs.com/package/@karmaniverous/aws-secrets-manager-tools) ![Node Current](https://img.shields.io/node/v/@karmaniverous/aws-secrets-manager-tools) [![docs](https://img.shields.io/badge/docs-website-blue)](https://docs.karmanivero.us/aws-secrets-manager-tools) [![changelog](https://img.shields.io/badge/changelog-latest-blue.svg)](./CHANGELOG.md) [![license](https://img.shields.io/badge/license-BSD--3--Clause-blue.svg)](./LICENSE)
+
 Tools and a get-dotenv plugin for working with AWS Secrets Manager “env-map” secrets (JSON object maps of environment variables).
 
 This package provides:
@@ -76,7 +78,7 @@ X-Ray support is guarded:
   - `aws-xray-sdk`
 - In `auto` mode, if `AWS_XRAY_DAEMON_ADDRESS` is set but `aws-xray-sdk` is not installed, initialization throws.
 
-## Config defaults (getdotenv.config.*)
+## Config defaults (getdotenv.config.\*)
 
 If you embed the plugin in your own get-dotenv host (or use the shipped CLI), you can provide safe defaults in config under `plugins['aws/secrets']`:
 
@@ -87,10 +89,10 @@ If you embed the plugin in your own get-dotenv host (or use the shipped CLI), yo
       "secretName": "$STACK_NAME",
       "templateExtension": "template",
       "push": { "from": ["file:env:private"] },
-      "pull": { "to": "env:private" }
-    }
-  }
+      "pull": { "to": "env:private" },
+    },
+  },
 }
 ```
 
-See the [secrets plugin guide](guides/secrets-plugin.md) for `--from` / `--to` selector details and all supported config keys.
+See the [secrets plugin guide](guides/secrets-plugin.md) for `--from` / `--to` selector details and all supported config keys.
