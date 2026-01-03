@@ -21,7 +21,11 @@
   },
   "out": "./docs/",
   "plugin": ["typedoc-plugin-mdn-links", "typedoc-plugin-replace-text"],
-  "projectDocuments": ["./CHANGELOG.md"],
+  "projectDocuments": [
+    "./guides/aws-secrets-manager-tools.md",
+    "./guides/secrets-plugin.md",
+    "./CHANGELOG.md"
+  ],
   "replaceText": {
     "replacements": [
       {

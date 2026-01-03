@@ -25,7 +25,7 @@
       "optional": true
     }
   },
-  "description": "A feature-rich NPM package template for TypeScript projects.",
+  "description": "Tools and get-dotenv plugin for AWS Secrets Manager env-map secrets.",
   "devDependencies": {
     "@eslint/js": "^9.39.2",
     "@rollup/plugin-alias": "^6.0.0",
@@ -76,14 +76,15 @@
   ],
   "homepage": "https://github.com/karmaniverous/aws-secrets-manager-tools#readme",
   "keywords": [
-    "eslint",
-    "lefthook",
-    "npm",
-    "prettier",
-    "rollup",
-    "template",
     "typescript",
-    "vitest"
+    "aws",
+    "secrets",
+    "secrets-manager",
+    "aws-secrets-manager",
+    "dotenv",
+    "getdotenv",
+    "cli",
+    "xray"
   ],
   "license": "BSD-3-Clause",
   "main": "dist/mjs/index.js",

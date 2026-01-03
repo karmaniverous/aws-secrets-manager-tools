@@ -2,7 +2,8 @@
 
 ## Next up
 
-- Run an end-to-end CLI smoke test against a real AWS account.
+- Run `npm run docs -- --emit none` to confirm the new TypeDoc guides render cleanly.
+- Consider publishing a first release once documentation is finalized.
 
 ## Completed (recent)
 
@@ -41,3 +42,4 @@
 - Fixed smoke overlay config schema + added smoke progress logs.
 - Made smoke output concise by default (SMOKE_VERBOSE=1 for full logs).
 - Quieted AWS SDK logging by default; smoke logs now concise.
+- Documentation pass: rewrote README and added TypeDoc guides for AwsSecretsManagerTools and the aws secrets plugin.
