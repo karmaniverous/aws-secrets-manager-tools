@@ -10,12 +10,9 @@
 import { spawn } from 'node:child_process';
 import crypto from 'node:crypto';
 import fs from 'node:fs/promises';
-import { createRequire } from 'node:module';
 import path from 'node:path';
 
 import { getDotenv } from '@karmaniverous/get-dotenv';
-
-const require = createRequire(import.meta.url);
 
 export type RunResult = {
   code: number;
@@ -92,16 +89,19 @@ export const runProcess = async ({
   cmd,
   args,
   env,
+  shell,
 }: {
   cwd: string;
   cmd: string;
   args: string[];
   env?: NodeJS.ProcessEnv;
+  shell?: boolean;
 }): Promise<RunResult> =>
   await new Promise((resolve) => {
     const child = spawn(cmd, args, {
       cwd,
       env,
+      shell,
       stdio: ['ignore', 'pipe', 'pipe'],
     });
 
@@ -138,26 +138,6 @@ const toChildProcessEnv = ({
   return Object.fromEntries([...baseEntries, ...setEntries]);
 };
 
-const resolveTsxCliEntry = (): string => {
-  // Avoid spawning `tsx.cmd` on Windows; run the real CLI entry via node.
-  const candidates = [
-    'tsx/dist/cli.mjs',
-    'tsx/dist/cli.js',
-    'tsx/dist/cli.cjs',
-  ];
-
-  for (const spec of candidates) {
-    try {
-      return require.resolve(spec);
-    } catch {
-      // continue
-    }
-  }
-  throw new Error(
-    `Unable to resolve tsx CLI entry (tried: ${candidates.join(', ')})`,
-  );
-};
-
 export const loadSmokeEnv = async (
   repoRoot: string,
 ): Promise<Record<string, string | undefined>> => {
@@ -184,7 +164,6 @@ export const runAwsSecretsManagerToolsCli = async ({
   argv: string[];
   env?: Record<string, string | undefined>;
 }): Promise<RunResult> => {
-  const tsxCli = resolveTsxCliEntry();
   const entry = path.resolve(
     repoRoot,
     'src/cli/aws-secrets-manager-tools/index.ts',
@@ -192,8 +171,13 @@ export const runAwsSecretsManagerToolsCli = async ({
 
   return await runProcess({
     cwd: repoRoot,
-    cmd: process.execPath,
-    args: [tsxCli, entry, ...argv],
+    // Use npx to invoke local tsx in a way that doesn't depend on tsx package
+    // subpath exports (which can break require.resolve for dist/cli.*).
+    //
+    // On Windows, `npx` is `npx.cmd` and must be executed via a shell.
+    cmd: 'npx',
+    args: ['--no-install', 'tsx', entry, ...argv],
+    shell: process.platform === 'win32',
     env: toChildProcessEnv({
       base: { ...process.env, NO_COLOR: '1' },
       extra: env,

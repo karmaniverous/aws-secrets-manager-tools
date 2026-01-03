@@ -36,4 +36,4 @@
 - Refactored aws secrets CLI/plugin typing to use get-dotenv public types + schema-typed config (no casts).
 - Fixed command option inference + smoke env lint (no delete).
 - Fixed ctx/config typing in actions (no this.getCtx) and selector narrowing.
-- Suppressed build/docs/knip warnings (tsx rollup + TSDoc + knip ignore).
+- Suppressed build/docs/knip warnings (tsx rollup + TSDoc + knip ignore).- Fixed smoke harness to spawn tsx via npx (exports-safe).
