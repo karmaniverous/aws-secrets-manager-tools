@@ -9,8 +9,8 @@
  *   - Default “auto”: enable only when AWS_XRAY_DAEMON_ADDRESS is set.
  *   - In “auto”, if the daemon address is set but aws-xray-sdk is missing,
  *     throw with a clear message.
- * - Enforce a minimal logger contract (debug/info/warn/error); do not attempt
- *   to polyfill or proxy unknown loggers.
+ * - Enforce the get-dotenv minimal Logger contract (debug/info/warn/error);
+ *   validate and throw (no polyfills or proxies).
  * - Secret values are JSON object maps of env vars.
  */
 
@@ -22,21 +22,14 @@ import {
   SecretsManagerClient,
   type SecretsManagerClientConfig,
 } from '@aws-sdk/client-secrets-manager';
-import type { ProcessEnv } from '@karmaniverous/get-dotenv';
+import {
+  assertLogger,
+  type Logger,
+  type ProcessEnv,
+} from '@karmaniverous/get-dotenv';
 
 import { isResourceNotFoundError } from './awsError';
 import { captureAwsSdkV3Client, shouldEnableXray } from './xray';
-
-/**
- * Console-like logger contract used by AwsSecretsManagerTools.
- *
- * If you pass a custom logger via `clientConfig.logger`, it must implement
- * these methods (no internal polyfills are applied).
- */
-export type AwsSecretsManagerToolsLogger = Pick<
-  Console,
-  'debug' | 'error' | 'info' | 'warn'
->;
 
 /** X-Ray capture mode for {@link AwsSecretsManagerTools.init}. */
 export type AwsSecretsManagerToolsXrayMode = 'auto' | 'on' | 'off';
@@ -74,26 +67,6 @@ export type AwsSecretsManagerToolsInitOptions = {
    * - `off`: disable.
    */
   xray?: AwsSecretsManagerToolsXrayMode;
-};
-
-const assertLogger = (candidate: unknown): AwsSecretsManagerToolsLogger => {
-  if (!candidate || typeof candidate !== 'object') {
-    throw new Error(
-      'logger must be an object with debug, info, warn, and error methods',
-    );
-  }
-  const logger = candidate as Partial<AwsSecretsManagerToolsLogger>;
-  if (
-    typeof logger.debug !== 'function' ||
-    typeof logger.info !== 'function' ||
-    typeof logger.warn !== 'function' ||
-    typeof logger.error !== 'function'
-  ) {
-    throw new Error(
-      'logger must implement debug, info, warn, and error methods; wrap/proxy your logger if needed',
-    );
-  }
-  return logger as AwsSecretsManagerToolsLogger;
 };
 
 const parseProcessEnv = (secretString: string): ProcessEnv => {
@@ -149,7 +122,7 @@ export class AwsSecretsManagerTools {
    */
   public readonly clientConfig: SecretsManagerClientConfig;
   /** The logger used by this wrapper and (when applicable) by the AWS client. */
-  public readonly logger: AwsSecretsManagerToolsLogger;
+  public readonly logger: Logger;
   /** Materialized X-Ray state (mode + enabled + daemonAddress when relevant). */
   public readonly xray: XrayState;
 
@@ -161,7 +134,7 @@ export class AwsSecretsManagerTools {
   }: {
     client: SecretsManagerClient;
     clientConfig: SecretsManagerClientConfig;
-    logger: AwsSecretsManagerToolsLogger;
+    logger: Logger;
     xray: XrayState;
   }) {
     this.client = client;

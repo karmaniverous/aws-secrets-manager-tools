@@ -65,7 +65,7 @@ const tools = await AwsSecretsManagerTools.init({
 ### Init behavior (important constraints)
 
 - `clientConfig` is an AWS SDK v3 `SecretsManagerClientConfig`.
-  - If `clientConfig.logger` is provided, it must implement `debug`, `info`, `warn`, and `error` (validated up front; no polyfills).
+  - If `clientConfig.logger` is provided, it must implement the unified get-dotenv `Logger` contract: `debug`, `info`, `warn`, and `error` (validated up front; no polyfills).
 - X-Ray capture is optional and guarded:
   - Default is `xray: 'auto'`: enabled only when `AWS_XRAY_DAEMON_ADDRESS` is set.
   - If capture is enabled but `aws-xray-sdk` is not installed, initialization throws with a clear error message.

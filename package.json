@@ -14,8 +14,7 @@
   },
   "dependencies": {
     "@aws-sdk/client-secrets-manager": "^3.965.0",
-    "@karmaniverous/get-dotenv": "^7.0.0",
-    "radash": "^12.1.1"
+    "@karmaniverous/get-dotenv": "^7.0.1"
   },
   "peerDependencies": {
     "aws-xray-sdk": "^3.12.0"

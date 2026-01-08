@@ -7,15 +7,9 @@
  *   X-Ray SDK will throw otherwise).
  */
 
-export type XrayMode = 'auto' | 'on' | 'off';
+import type { Logger } from '@karmaniverous/get-dotenv';
 
-/**
- * Minimal console-like logger contract used by this package.
- *
- * If you pass a custom logger via AWS client config, it must implement these
- * methods (no internal polyfills are applied).
- */
-export type Logger = Pick<Console, 'debug' | 'error' | 'info' | 'warn'>;
+export type XrayMode = 'auto' | 'on' | 'off';
 
 export const shouldEnableXray = (
   mode: XrayMode | undefined,
