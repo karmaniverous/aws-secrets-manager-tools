@@ -2,10 +2,25 @@
 
 All notable changes to this project will be documented in this file. Dates are displayed in UTC.
 
+#### [0.2.0](https://github.com/karmaniverous/aws-secrets-manager-tools/compare/0.1.1...0.2.0)
+
+- Use dotenvExpand for secret name expansion [`383a142`](https://github.com/karmaniverous/aws-secrets-manager-tools/commit/383a142fb443d511a4d27f46ea42570558d80d19)
+- imports [`0b0b108`](https://github.com/karmaniverous/aws-secrets-manager-tools/commit/0b0b108c895ade06976bc00bdb404c541503b30d)
+- Refactor AwsSecretsManagerTools constructor [`ccfe1ff`](https://github.com/karmaniverous/aws-secrets-manager-tools/commit/ccfe1ff19f9360e2b7ba35ea6459241b943b5fdf)
+- refactor: adopt aws-xray-tools [`f1229d5`](https://github.com/karmaniverous/aws-secrets-manager-tools/commit/f1229d56fddf22ed77388a7e444142187b2d5733)
+- installed aws-xray-tools [`7ffe82b`](https://github.com/karmaniverous/aws-secrets-manager-tools/commit/7ffe82b4edd4ad6370ed01bb310876314fc6cce3)
+- Unify tools logger with get-dotenv Logger [`71e602b`](https://github.com/karmaniverous/aws-secrets-manager-tools/commit/71e602b00a2fae48583ed4a6deee0f4e5329fe39)
+- Docs: sync guides with constructor API [`8c4b690`](https://github.com/karmaniverous/aws-secrets-manager-tools/commit/8c4b690f485141f97d3de9b30aa05e483eabc425)
+- updated dependencies [`6f9efb9`](https://github.com/karmaniverous/aws-secrets-manager-tools/commit/6f9efb996075e9b12cd2d0a46007fcfaa649cb37)
+- added image assets [`744fa11`](https://github.com/karmaniverous/aws-secrets-manager-tools/commit/744fa112423b444e4b0519a94a10d87fc59c20e7)
+
 #### [0.1.1](https://github.com/karmaniverous/aws-secrets-manager-tools/compare/0.1.0...0.1.1)
+
+> 3 January 2026
 
 - docs: sync STAN assistant guide [`2f27323`](https://github.com/karmaniverous/aws-secrets-manager-tools/commit/2f273239b5eefc249bb37407e081e788844ef43a)
 - updated readme [`cfcb055`](https://github.com/karmaniverous/aws-secrets-manager-tools/commit/cfcb055636149544e1e788c893d32e536c7c2b4b)
+- chore: release v0.1.1 [`7b17600`](https://github.com/karmaniverous/aws-secrets-manager-tools/commit/7b17600f3dde99d86e858086d5b56ad0c809fe03)
 - updated readme [`268bd67`](https://github.com/karmaniverous/aws-secrets-manager-tools/commit/268bd67801852b4c4c09b0d29868b0adbc6e86ad)
 
 #### 0.1.0
