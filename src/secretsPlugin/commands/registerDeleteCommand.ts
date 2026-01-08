@@ -7,11 +7,16 @@
  *   composed defaults in help output.
  */
 
-import { buildSpawnEnv, dotenvExpand } from '@karmaniverous/get-dotenv';
+import {
+  buildSpawnEnv,
+  dotenvExpand,
+  silentLogger,
+  toNumber,
+} from '@karmaniverous/get-dotenv';
 import { readMergedOptions } from '@karmaniverous/get-dotenv/cliHost';
+import { getAwsRegion } from '@karmaniverous/get-dotenv/plugins';
 
 import { AwsSecretsManagerTools } from '../../secretsManager/AwsSecretsManagerTools';
-import { getAwsRegion, silentLogger, toNumber } from './commandUtils';
 import type { SecretsPluginApi, SecretsPluginCli } from './types';
 
 export const registerDeleteCommand = ({

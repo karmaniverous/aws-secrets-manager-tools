@@ -8,23 +8,23 @@
  */
 
 import {
+  applyIncludeExclude,
   buildSpawnEnv,
   dotenvExpand,
   editDotenvFile,
   getDotenvCliOptions2Options,
+  requireString,
+  silentLogger,
 } from '@karmaniverous/get-dotenv';
-import { readMergedOptions } from '@karmaniverous/get-dotenv/cliHost';
+import {
+  describeConfigKeyListDefaults,
+  readMergedOptions,
+} from '@karmaniverous/get-dotenv/cliHost';
+import { getAwsRegion } from '@karmaniverous/get-dotenv/plugins/aws';
 
 import { AwsSecretsManagerTools } from '../../secretsManager/AwsSecretsManagerTools';
 import { parseToSelector } from '../provenanceSelectors';
 import { resolveIncludeExclude } from '../secretsPluginConfig';
-import { applyIncludeExclude } from '../secretsUtils';
-import {
-  describeConfigKeyListDefaults,
-  getAwsRegion,
-  requireString,
-  silentLogger,
-} from './commandUtils';
 import type { SecretsPluginApi, SecretsPluginCli } from './types';
 
 export const registerPullCommand = ({

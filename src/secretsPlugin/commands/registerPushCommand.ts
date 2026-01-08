@@ -7,8 +7,19 @@
  * - Dynamic options must be registered on the command to drive typing + help.
  */
 
-import { buildSpawnEnv, dotenvExpand } from '@karmaniverous/get-dotenv';
-import { readMergedOptions } from '@karmaniverous/get-dotenv/cliHost';
+import {
+  applyIncludeExclude,
+  assertByteLimit,
+  buildSpawnEnv,
+  dotenvExpand,
+  silentLogger,
+} from '@karmaniverous/get-dotenv';
+import {
+  describeConfigKeyListDefaults,
+  describeDefault,
+  readMergedOptions,
+} from '@karmaniverous/get-dotenv/cliHost';
+import { getAwsRegion } from '@karmaniverous/get-dotenv/plugins/aws';
 
 import { AwsSecretsManagerTools } from '../../secretsManager/AwsSecretsManagerTools';
 import {
@@ -16,14 +27,6 @@ import {
   selectEnvByProvenance,
 } from '../provenanceSelectors';
 import { resolveIncludeExclude } from '../secretsPluginConfig';
-import { applyIncludeExclude } from '../secretsUtils';
-import {
-  assertBytesWithinSecretsManagerLimit,
-  describeConfigKeyListDefaults,
-  describeDefault,
-  getAwsRegion,
-  silentLogger,
-} from './commandUtils';
 import type { SecretsPluginApi, SecretsPluginCli } from './types';
 
 export const registerPushCommand = ({
@@ -131,7 +134,12 @@ export const registerPushCommand = ({
         fromSelectors,
       );
       const secrets = applyIncludeExclude(selected, { include, exclude });
-      assertBytesWithinSecretsManagerLimit(secrets);
+      assertByteLimit(
+        secrets,
+        65_536,
+        (v, l) =>
+          `SecretString size ${String(v)} bytes exceeds ${String(l)} bytes; narrow selection with --from/--include/--exclude.`,
+      );
 
       const region = getAwsRegion(ctx);
       const tools = await AwsSecretsManagerTools.init({
