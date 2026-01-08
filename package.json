@@ -17,9 +17,6 @@
     "@karmaniverous/aws-xray-tools": "^0.1.0",
     "@karmaniverous/get-dotenv": "^7.0.1"
   },
-  "peerDependencies": {
-    "aws-xray-sdk": "^3.12.0"
-  },
   "peerDependenciesMeta": {
     "aws-xray-sdk": {
       "optional": true

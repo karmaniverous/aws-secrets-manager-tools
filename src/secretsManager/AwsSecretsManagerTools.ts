@@ -23,31 +23,18 @@ import {
   type SecretsManagerClientConfig,
 } from '@aws-sdk/client-secrets-manager';
 import {
+  captureAwsSdkV3Client,
+  shouldEnableXray,
+  type XrayMode,
+  type XrayState,
+} from '@karmaniverous/aws-xray-tools';
+import {
   assertLogger,
   type Logger,
   type ProcessEnv,
 } from '@karmaniverous/get-dotenv';
 
 import { isResourceNotFoundError } from './awsError';
-import { captureAwsSdkV3Client, shouldEnableXray } from './xray';
-
-/** X-Ray capture mode for {@link AwsSecretsManagerTools.init}. */
-export type AwsSecretsManagerToolsXrayMode = 'auto' | 'on' | 'off';
-
-/**
- * Materialized X-Ray state for diagnostics and DX.
- *
- * Note: `enabled` reflects the effective runtime decision after applying the
- * configured `mode` and checking daemon configuration.
- */
-export type XrayState = {
-  /** Capture mode configured for initialization. */
-  mode: AwsSecretsManagerToolsXrayMode;
-  /** Whether capture is enabled for the effective client instance. */
-  enabled: boolean;
-  /** Daemon address used when capture is enabled (if available). */
-  daemonAddress?: string;
-};
 
 /** Options for {@link AwsSecretsManagerTools.init}. */
 export type AwsSecretsManagerToolsInitOptions = {
@@ -66,7 +53,7 @@ export type AwsSecretsManagerToolsInitOptions = {
    * - `on`: force enable (throws if daemon address is missing).
    * - `off`: disable.
    */
-  xray?: AwsSecretsManagerToolsXrayMode;
+  xray?: XrayMode;
 };
 
 const parseProcessEnv = (secretString: string): ProcessEnv => {

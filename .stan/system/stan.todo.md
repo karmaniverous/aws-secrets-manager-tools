@@ -2,6 +2,7 @@
 
 ## Next up
 
+- Run `npm run lint`, `npm run test`, `npm run typecheck`, and `npm run build` to validate the aws-xray-tools refactor.
 - Run `npm run docs -- --emit none` to confirm the new TypeDoc guides render cleanly.
 - Consider publishing a first release once documentation is finalized.
 
@@ -44,4 +45,6 @@
 - Quieted AWS SDK logging by default; smoke logs now concise.
 - Documentation pass: rewrote README and added TypeDoc guides for AwsSecretsManagerTools and the aws secrets plugin.
 - Synced the STAN assistant guide with the current API/CLI implementation.
-- Use dotenvExpand for --secret-name expansion in aws secrets commands.- Refactor AwsSecretsManagerTools to use get-dotenv Logger.
+- Use dotenvExpand for --secret-name expansion in aws secrets commands.
+- Refactor AwsSecretsManagerTools to use get-dotenv Logger.
+- Refactor X-Ray capture to use @karmaniverous/aws-xray-tools and remove redundant local implementation; fix STAN imports to use node_modules sources.

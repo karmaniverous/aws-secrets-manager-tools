@@ -7,8 +7,8 @@ stan-core:
     '@commander-js/extra-typings':
       - node_modules/@commander-js/extra-typings/index.d.ts
     '@karmaniverous/aws-xray-tools':
-      - ../aws-xray-tools/.stan/interop/entity-client-dynamodb/**
-      - ../aws-xray-tools/guides/stan-assistant-guide.md
+      - ./node_modules/@karmaniverous/aws-xray-tools/dist/index.d.ts
+      - ./node_modules/@karmaniverous/aws-xray-tools/README.md
     '@karmaniverous/get-dotenv':
       - ./node_modules/@karmaniverous/get-dotenv/dist/cliHost.d.ts
       - ./node_modules/@karmaniverous/get-dotenv/dist/env-overlay.d.ts

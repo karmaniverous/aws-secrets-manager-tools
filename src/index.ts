@@ -13,7 +13,5 @@
 export {
   AwsSecretsManagerTools,
   type AwsSecretsManagerToolsInitOptions,
-  type AwsSecretsManagerToolsXrayMode,
-  type XrayState,
 } from './secretsManager/AwsSecretsManagerTools';
 export { secretsPlugin } from './secretsPlugin/secretsPlugin';
