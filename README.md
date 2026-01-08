@@ -76,7 +76,7 @@ X-Ray support is guarded:
 - Default behavior is `xray: 'auto'`: capture is enabled only when `AWS_XRAY_DAEMON_ADDRESS` is set.
 - To enable capture, install the optional peer dependency:
   - `aws-xray-sdk`
-- In `auto` mode, if `AWS_XRAY_DAEMON_ADDRESS` is set but `aws-xray-sdk` is not installed, initialization throws.
+- In `auto` mode, if `AWS_XRAY_DAEMON_ADDRESS` is set but `aws-xray-sdk` is not installed, construction throws.
 
 ## Config defaults (getdotenv.config.\*)
 

@@ -32,10 +32,10 @@ This library treats `SecretString` as JSON with the following shape:
 - When reading, `null` is decoded as `undefined` (because JSON cannot represent `undefined`).
 - Binary secrets (`SecretBinary`) are not supported by this wrapper.
 
-The canonical type is:
+The canonical payload type used by this wrapper is get-dotenv’s `ProcessEnv`:
 
 ```ts
-export type ProcessEnv = ProcessEnv;
+import type { ProcessEnv } from '@karmaniverous/get-dotenv';
 ```
 
 ## Initialize once: `new AwsSecretsManagerTools(...)`
@@ -54,7 +54,7 @@ const tools = new AwsSecretsManagerTools({
 });
 ```
 
-### Init options
+### Constructor options
 
 `new AwsSecretsManagerTools({ ... })` accepts:
 
@@ -167,12 +167,12 @@ Options:
 
 ## AWS X-Ray capture (optional)
 
-X-Ray capture is guarded and uses a dynamic import:
+X-Ray capture is guarded:
 
 - Install the optional peer dependency if you want capture:
   - `aws-xray-sdk`
 - In `'auto'` mode, capture is enabled only when `AWS_XRAY_DAEMON_ADDRESS` is set.
-- In `'auto'` mode, if the daemon address is set but `aws-xray-sdk` is not installed, initialization throws with a clear message.
+- In `'auto'` mode, if the daemon address is set but `aws-xray-sdk` is not installed, construction throws with a clear message.
 
 ## Next steps
 

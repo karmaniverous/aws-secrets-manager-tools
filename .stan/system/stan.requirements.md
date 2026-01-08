@@ -1,10 +1,9 @@
 # Requirements (stan.requirements.md)
 
-When updated: 2025-12-31T00:00:00Z
+When updated: 2026-01-08T00:00:00Z
 
 ## AWS secrets manager tools (get-dotenv based)
-
-- Provide a public TypeScript wrapper named `AwsSecretsManagerTools`.
+- Provide a public TypeScript wrapper named `AwsSecretsManagerTools`.
   - It owns the complex client setup (including optional AWS X-Ray capture) and exposes the fully configured SDK client for advanced usage.
   - Downstream consumers should primarily import this package (not construct `SecretsManagerClient` themselves) and may import AWS SDK command classes as needed for advanced operations.
 
@@ -15,10 +14,10 @@ When updated: 2025-12-31T00:00:00Z
 
 - Exposed instance state (DX / debugging)
   - `tools.client`: the effective AWS SDK v3 `SecretsManagerClient` instance.
-    - When X-Ray is enabled, this must be the captured/instrumented client.  - `tools.clientConfig`: the effective `SecretsManagerClientConfig` used to construct the base client.
+    - When X-Ray is enabled, this must be the captured/instrumented client.
+  - `tools.clientConfig`: the effective `SecretsManagerClientConfig` used to construct the base client.
   - `tools.xray`: materialized X-Ray state (mode + enabled flag + daemon address when relevant).
-  - `tools.logger`: the logger used by the wrapper and used (as appropriate) for client construction/capture logging.
-
+  - `tools.logger`: the logger used by the wrapper and used (as appropriate) for client construction/capture logging.
 - Logging contract
   - The wrapper uses a console-like logger and requires the minimal set of methods it calls:
     - `debug`, `info`, `warn`, `error`

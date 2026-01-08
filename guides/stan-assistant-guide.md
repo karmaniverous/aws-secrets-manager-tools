@@ -21,7 +21,6 @@ This guide is a compact, implementation-synced reference for STAN assistants int
 import {
   AwsSecretsManagerTools,
   secretsPlugin,
-  type ProcessEnv,
 } from '@karmaniverous/aws-secrets-manager-tools';
 ```
 
@@ -39,10 +38,10 @@ Rules:
 - When decoding, `null` is treated as `undefined` (because JSON can’t represent `undefined`).
 - Binary secrets (`SecretBinary`) are not supported by the wrapper.
 
-The canonical type is:
+The canonical payload type used by this wrapper is get-dotenv’s `ProcessEnv`:
 
 ```ts
-export type ProcessEnv = ProcessEnv;
+import type { ProcessEnv } from '@karmaniverous/get-dotenv';
 ```
 
 ## Programmatic API: AwsSecretsManagerTools
@@ -68,7 +67,7 @@ const tools = new AwsSecretsManagerTools({
   - If `clientConfig.logger` is provided, it must implement the unified get-dotenv `Logger` contract: `debug`, `info`, `warn`, and `error` (validated up front; no polyfills).
 - X-Ray capture is optional and guarded:
   - Default is `xray: 'auto'`: enabled only when `AWS_XRAY_DAEMON_ADDRESS` is set.
-  - If capture is enabled but `aws-xray-sdk` is not installed, initialization throws with a clear error message.
+  - If capture is enabled but `aws-xray-sdk` is not installed, construction throws with a clear error message.
 
 ### Escape hatch: use the raw AWS SDK client
 

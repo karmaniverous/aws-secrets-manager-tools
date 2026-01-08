@@ -48,4 +48,4 @@
 - Use dotenvExpand for --secret-name expansion in aws secrets commands.
 - Refactor AwsSecretsManagerTools to use get-dotenv Logger.
 - Refactor X-Ray capture to use @karmaniverous/aws-xray-tools and remove redundant local implementation; fix STAN imports to use node_modules sources.
-- Refactored AwsSecretsManagerTools to use a public constructor (removed async init) now that aws-xray-tools capture is synchronous.
+- Refactored AwsSecretsManagerTools to use a public constructor (removed async init) now that aws-xray-tools capture is synchronous.- Documentation sync pass: align constructor/X-Ray wording and correct `ProcessEnv` import guidance.
