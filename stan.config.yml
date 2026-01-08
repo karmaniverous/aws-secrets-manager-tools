@@ -6,6 +6,9 @@ stan-core:
   imports:
     '@commander-js/extra-typings':
       - node_modules/@commander-js/extra-typings/index.d.ts
+    '@karmaniverous/aws-xray-tools':
+      - ../aws-xray-tools/.stan/interop/entity-client-dynamodb/**
+      - ../aws-xray-tools/guides/stan-assistant-guide.md
     '@karmaniverous/get-dotenv':
       - ./node_modules/@karmaniverous/get-dotenv/dist/cliHost.d.ts
       - ./node_modules/@karmaniverous/get-dotenv/dist/env-overlay.d.ts
