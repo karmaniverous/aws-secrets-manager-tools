@@ -28,7 +28,7 @@ When updated: 2025-12-31T00:00:00Z
   - If no logger is provided, default to `console`.
 
 - Wrapper operations (env-map secrets)
-  - Secret values are always a JSON object map of env vars (`Record<string, string | undefined>`).
+  - Secret values are always a JSON object map of env vars (`ProcessEnv`).
   - Provide convenience methods with “tools-y” names:
     - `readEnvSecret({ secretId, versionId? })`
     - `updateEnvSecret({ secretId, value, versionId? })` (update-only; does not create)
@@ -47,7 +47,7 @@ When updated: 2025-12-31T00:00:00Z
   - `aws secrets delete`
 
 - `aws secrets` behavior:
-  - Secret values are always a JSON object map of env vars (`Record<string, string | undefined>`).
+  - Secret values are always a JSON object map of env vars (`ProcessEnv`).
   - Secret name expansion (e.g. `$STACK_NAME`) expands against `{ ...process.env, ...ctx.dotenv }` (ctx wins).
   - Dotenv file editing uses get-dotenv precedence semantics (“winner path”), not “write all paths”.
     - Prefer `editDotenvFile(...)` target selection behavior (last path wins unless configured otherwise).

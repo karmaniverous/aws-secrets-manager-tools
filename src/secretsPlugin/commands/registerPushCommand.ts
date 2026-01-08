@@ -7,6 +7,7 @@
  * - Dynamic options must be registered on the command to drive typing + help.
  */
 
+import { buildSpawnEnv, dotenvExpand } from '@karmaniverous/get-dotenv';
 import { readMergedOptions } from '@karmaniverous/get-dotenv/cliHost';
 
 import { AwsSecretsManagerTools } from '../../secretsManager/AwsSecretsManagerTools';
@@ -15,11 +16,7 @@ import {
   selectEnvByProvenance,
 } from '../provenanceSelectors';
 import { resolveIncludeExclude } from '../secretsPluginConfig';
-import {
-  applyIncludeExclude,
-  buildExpansionEnv,
-  expandSecretName,
-} from '../secretsUtils';
+import { applyIncludeExclude } from '../secretsUtils';
 import {
   assertBytesWithinSecretsManagerLimit,
   describeConfigKeyListDefaults,
@@ -123,9 +120,9 @@ export const registerPushCommand = ({
         cfgExclude: cfg.push?.exclude,
       });
 
-      const envRef = buildExpansionEnv(ctx.dotenv);
+      const envRef = buildSpawnEnv(process.env, ctx.dotenv);
       const secretNameRaw = opts.secretName ?? cfg.secretName ?? '$STACK_NAME';
-      const secretId = expandSecretName(secretNameRaw, envRef);
+      const secretId = dotenvExpand(secretNameRaw, envRef);
       if (!secretId) throw new Error('secret-name is required.');
 
       const selected = selectEnvByProvenance(

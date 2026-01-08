@@ -22,9 +22,9 @@ import {
   SecretsManagerClient,
   type SecretsManagerClientConfig,
 } from '@aws-sdk/client-secrets-manager';
+import type { ProcessEnv } from '@karmaniverous/get-dotenv';
 
 import { isResourceNotFoundError } from './awsError';
-import type { EnvSecretMap } from './envSecretMap';
 import { captureAwsSdkV3Client, shouldEnableXray } from './xray';
 
 /**
@@ -96,7 +96,7 @@ const assertLogger = (candidate: unknown): AwsSecretsManagerToolsLogger => {
   return logger as AwsSecretsManagerToolsLogger;
 };
 
-const parseEnvSecretMap = (secretString: string): EnvSecretMap => {
+const parseProcessEnv = (secretString: string): ProcessEnv => {
   let parsed: unknown;
   try {
     parsed = JSON.parse(secretString);
@@ -108,7 +108,7 @@ const parseEnvSecretMap = (secretString: string): EnvSecretMap => {
     throw new Error('Secret JSON must be an object map.');
   }
 
-  const out: Record<string, string | undefined> = {};
+  const out: ProcessEnv = {};
   for (const [k, v] of Object.entries(parsed as Record<string, unknown>)) {
     if (v === null) {
       out[k] = undefined;
@@ -123,13 +123,13 @@ const parseEnvSecretMap = (secretString: string): EnvSecretMap => {
   return out;
 };
 
-const toSecretString = (value: EnvSecretMap): string => JSON.stringify(value);
+const toSecretString = (value: ProcessEnv): string => JSON.stringify(value);
 
 /**
  * Tools-style AWS Secrets Manager wrapper for env-map secrets.
  *
  * The secret payload is always a JSON object map of environment variables:
- * `Record<string, string | undefined>`.
+ * `ProcessEnv`.
  *
  * Consumers should typically use the convenience methods on this class, and
  * use {@link AwsSecretsManagerTools.client} as an escape hatch when they need
@@ -230,7 +230,7 @@ export class AwsSecretsManagerTools {
   async readEnvSecret(opts: {
     secretId: string;
     versionId?: string;
-  }): Promise<EnvSecretMap> {
+  }): Promise<ProcessEnv> {
     const { secretId, versionId } = opts;
     if (!secretId) throw new Error('secretId is required');
 
@@ -248,7 +248,7 @@ export class AwsSecretsManagerTools {
       );
     }
 
-    return parseEnvSecretMap(res.SecretString);
+    return parseProcessEnv(res.SecretString);
   }
 
   /**
@@ -263,7 +263,7 @@ export class AwsSecretsManagerTools {
    */
   async updateEnvSecret(opts: {
     secretId: string;
-    value: EnvSecretMap;
+    value: ProcessEnv;
     versionId?: string;
   }): Promise<void> {
     const { secretId, value, versionId } = opts;
@@ -291,7 +291,7 @@ export class AwsSecretsManagerTools {
    */
   async createEnvSecret(opts: {
     secretId: string;
-    value: EnvSecretMap;
+    value: ProcessEnv;
     description?: string;
     forceOverwriteReplicaSecret?: boolean;
     versionId?: string;
@@ -333,7 +333,7 @@ export class AwsSecretsManagerTools {
     value,
   }: {
     secretId: string;
-    value: EnvSecretMap;
+    value: ProcessEnv;
   }): Promise<'updated' | 'created'> {
     try {
       await this.updateEnvSecret({ secretId, value });

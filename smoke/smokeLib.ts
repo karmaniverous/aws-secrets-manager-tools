@@ -12,6 +12,7 @@ import crypto from 'node:crypto';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 
+import type { ProcessEnv } from '@karmaniverous/get-dotenv';
 import { getDotenv } from '@karmaniverous/get-dotenv';
 
 export type RunResult = {
@@ -119,7 +120,7 @@ const toChildProcessEnv = ({
   extra,
 }: {
   base: NodeJS.ProcessEnv;
-  extra?: Record<string, string | undefined>;
+  extra?: ProcessEnv;
 }): NodeJS.ProcessEnv => {
   const unset = new Set<string>();
   const setEntries: Array<[string, string]> = [];
@@ -138,9 +139,7 @@ const toChildProcessEnv = ({
   return Object.fromEntries([...baseEntries, ...setEntries]);
 };
 
-export const loadSmokeEnv = async (
-  repoRoot: string,
-): Promise<Record<string, string | undefined>> => {
+export const loadSmokeEnv = async (repoRoot: string): Promise<ProcessEnv> => {
   // Load committed defaults from smoke/.env plus optional overrides from
   // smoke/.env.local (gitignored).
   return await getDotenv({
@@ -151,9 +150,8 @@ export const loadSmokeEnv = async (
   });
 };
 
-export const shouldKeepArtifacts = (
-  smokeEnv: Record<string, string | undefined>,
-): boolean => smokeEnv.SMOKE_KEEP_ARTIFACTS === '1';
+export const shouldKeepArtifacts = (smokeEnv: ProcessEnv): boolean =>
+  smokeEnv.SMOKE_KEEP_ARTIFACTS === '1';
 
 export const runAwsSecretsManagerToolsCli = async ({
   repoRoot,
@@ -162,7 +160,7 @@ export const runAwsSecretsManagerToolsCli = async ({
 }: {
   repoRoot: string;
   argv: string[];
-  env?: Record<string, string | undefined>;
+  env?: ProcessEnv;
 }): Promise<RunResult> => {
   const entry = path.resolve(
     repoRoot,

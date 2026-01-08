@@ -12,9 +12,8 @@
  * - Provenance entry shapes are sourced from get-dotenv’s public ctx types.
  */
 
+import type { ProcessEnv } from '@karmaniverous/get-dotenv';
 import type { GetDotenvCliCtx } from '@karmaniverous/get-dotenv/cliHost';
-
-import type { EnvSecretMap } from '../secretsManager/envSecretMap';
 
 export type DotenvProvenance = GetDotenvCliCtx['dotenvProvenance'];
 export type DotenvProvenanceAnyEntry = DotenvProvenance[string][number];
@@ -181,11 +180,11 @@ export const matchesFromSelector = (
  *   has `op: 'unset'`.
  */
 export const selectEnvByProvenance = (
-  dotenv: Record<string, string | undefined>,
+  dotenv: ProcessEnv,
   provenance: DotenvProvenance,
   selectors: FromSelector[],
-): EnvSecretMap => {
-  const out: EnvSecretMap = {};
+): ProcessEnv => {
+  const out: ProcessEnv = {};
 
   for (const [key, entries] of Object.entries(provenance)) {
     const value = dotenv[key];

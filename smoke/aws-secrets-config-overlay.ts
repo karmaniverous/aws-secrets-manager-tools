@@ -11,6 +11,8 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 
+import type { ProcessEnv } from '@karmaniverous/get-dotenv';
+
 import {
   assertContains,
   assertSmokeFixturesPresent,
@@ -42,7 +44,7 @@ const listRootConfigs = async (repoRoot: string): Promise<string[]> => {
 
 const withConfigOverlay = async <T>(
   repoRoot: string,
-  smokeEnv: Record<string, string | undefined>,
+  smokeEnv: ProcessEnv,
   fn: () => Promise<T>,
 ): Promise<T> => {
   const runId = `${String(Date.now())}-${Math.random().toString(16).slice(2)}`;

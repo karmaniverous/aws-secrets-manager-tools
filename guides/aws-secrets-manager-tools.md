@@ -35,7 +35,7 @@ This library treats `SecretString` as JSON with the following shape:
 The canonical type is:
 
 ```ts
-export type EnvSecretMap = Record<string, string | undefined>;
+export type ProcessEnv = ProcessEnv;
 ```
 
 ## Initialize once: `AwsSecretsManagerTools.init(...)`

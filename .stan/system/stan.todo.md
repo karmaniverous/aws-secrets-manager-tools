@@ -10,7 +10,7 @@
 - Added get-dotenv interop note and formalized requirements + plan (documentation-only).
 - Implemented AwsSecretsManagerClient, aws secrets plugin, and get-dotenv CLI.
 - Fixed lint errors and prevented Vitest from running stale .rollup.cache tests.
-- Fixed remaining typecheck + lint issues (mock Promise returns; EnvSecretMap cast).
+- Fixed remaining typecheck + lint issues (mock Promise returns; ProcessEnv cast).
 - Changed aws-xray-sdk to optional peer dependency.
 - Fixed build script to load `rollup.config.ts` (no missing `rollup.config.mjs`).
 - Removed TypeDoc warnings by documenting public API surfaces.
@@ -44,3 +44,4 @@
 - Quieted AWS SDK logging by default; smoke logs now concise.
 - Documentation pass: rewrote README and added TypeDoc guides for AwsSecretsManagerTools and the aws secrets plugin.
 - Synced the STAN assistant guide with the current API/CLI implementation.
+- Use dotenvExpand for --secret-name expansion in aws secrets commands.

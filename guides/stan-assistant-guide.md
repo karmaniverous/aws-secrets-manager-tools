@@ -21,7 +21,7 @@ This guide is a compact, implementation-synced reference for STAN assistants int
 import {
   AwsSecretsManagerTools,
   secretsPlugin,
-  type EnvSecretMap,
+  type ProcessEnv,
 } from '@karmaniverous/aws-secrets-manager-tools';
 ```
 
@@ -42,7 +42,7 @@ Rules:
 The canonical type is:
 
 ```ts
-export type EnvSecretMap = Record<string, string | undefined>;
+export type ProcessEnv = ProcessEnv;
 ```
 
 ## Programmatic API: AwsSecretsManagerTools
@@ -82,7 +82,7 @@ const res = await tools.client.send(new ListSecretsCommand({}));
 
 Convenience methods (env-map secrets):
 
-- `readEnvSecret({ secretId, versionId? }) -> EnvSecretMap`
+- `readEnvSecret({ secretId, versionId? }) -> ProcessEnv`
 - `updateEnvSecret({ secretId, value, versionId? }) -> Promise<void>` (update-only; does not create)
 - `createEnvSecret({ secretId, value, description?, forceOverwriteReplicaSecret?, versionId? }) -> Promise<void>`
 - `upsertEnvSecret({ secretId, value }) -> Promise<'updated' | 'created'>` (creates only on `ResourceNotFoundException`)
