@@ -2,8 +2,8 @@
  * Requirements addressed:
  * - Provide a public tools-style wrapper `AwsSecretsManagerTools`.
  * - Package consumers should not need to construct SecretsManagerClient; they
- *   should use `AwsSecretsManagerTools.init(...)` and optionally import AWS SDK
- *   Commands for advanced operations.
+ *   should construct `new AwsSecretsManagerTools(...)` and optionally import
+ *   AWS SDK Commands for advanced operations.
  * - Expose the fully configured SDK client via `tools.client`.
  * - Support optional AWS X-Ray capture:
  *   - Default “auto”: enable only when AWS_XRAY_DAEMON_ADDRESS is set.
@@ -36,8 +36,8 @@ import {
 
 import { isResourceNotFoundError } from './awsError';
 
-/** Options for {@link AwsSecretsManagerTools.init}. */
-export type AwsSecretsManagerToolsInitOptions = {
+/** Options for {@link AwsSecretsManagerTools} construction. */
+export type AwsSecretsManagerToolsOptions = {
   /**
    * AWS SDK v3 Secrets Manager client config.
    *
@@ -113,28 +113,8 @@ export class AwsSecretsManagerTools {
   /** Materialized X-Ray state (mode + enabled + daemonAddress when relevant). */
   public readonly xray: XrayState;
 
-  private constructor({
-    client,
-    clientConfig,
-    logger,
-    xray,
-  }: {
-    client: SecretsManagerClient;
-    clientConfig: SecretsManagerClientConfig;
-    logger: Logger;
-    xray: XrayState;
-  }) {
-    this.client = client;
-    this.clientConfig = clientConfig;
-    this.logger = logger;
-    this.xray = xray;
-  }
-
   /**
-   * Initialize an `AwsSecretsManagerTools` instance.
-   *
-   * This factory owns all setup (including optional X-Ray capture) so consumers
-   * do not need to construct a base Secrets Manager client themselves.
+   * Construct an `AwsSecretsManagerTools` instance.
    *
    * @throws If `clientConfig.logger` is provided but does not implement
    * `debug`, `info`, `warn`, and `error`.
@@ -142,10 +122,10 @@ export class AwsSecretsManagerTools {
    * with `AWS_XRAY_DAEMON_ADDRESS` set) but `aws-xray-sdk` is not installed.
    * @throws If X-Ray capture is requested but `AWS_XRAY_DAEMON_ADDRESS` is not set.
    */
-  static async init({
+  constructor({
     clientConfig = {},
     xray: xrayMode = 'auto',
-  }: AwsSecretsManagerToolsInitOptions = {}): Promise<AwsSecretsManagerTools> {
+  }: AwsSecretsManagerToolsOptions = {}) {
     const logger = assertLogger(clientConfig.logger ?? console);
 
     const effectiveClientConfig: SecretsManagerClientConfig = {
@@ -163,19 +143,17 @@ export class AwsSecretsManagerTools {
     };
 
     const effectiveClient = enabled
-      ? await captureAwsSdkV3Client(base, {
+      ? captureAwsSdkV3Client(base, {
           mode: xrayMode,
           logger,
           daemonAddress,
         })
       : base;
 
-    return new AwsSecretsManagerTools({
-      client: effectiveClient,
-      clientConfig: effectiveClientConfig,
-      logger,
-      xray: xrayState,
-    });
+    this.client = effectiveClient;
+    this.clientConfig = effectiveClientConfig;
+    this.logger = logger;
+    this.xray = xrayState;
   }
 
   /**

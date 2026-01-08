@@ -9,15 +9,13 @@ When updated: 2025-12-31T00:00:00Z
   - Downstream consumers should primarily import this package (not construct `SecretsManagerClient` themselves) and may import AWS SDK command classes as needed for advanced operations.
 
 - Construction
-  - Provide an async factory:
-    - `AwsSecretsManagerTools.init({ clientConfig?, xray? }) -> Promise<AwsSecretsManagerTools>`
-  - The class constructor is not public (private/protected).
+  - Provide a public constructor:
+    - `new AwsSecretsManagerTools({ clientConfig?, xray? })`
   - Do not support injecting a pre-built SDK client.
 
 - Exposed instance state (DX / debugging)
   - `tools.client`: the effective AWS SDK v3 `SecretsManagerClient` instance.
-    - When X-Ray is enabled, this must be the captured/instrumented client.
-  - `tools.clientConfig`: the effective `SecretsManagerClientConfig` used to construct the base client.
+    - When X-Ray is enabled, this must be the captured/instrumented client.  - `tools.clientConfig`: the effective `SecretsManagerClientConfig` used to construct the base client.
   - `tools.xray`: materialized X-Ray state (mode + enabled flag + daemon address when relevant).
   - `tools.logger`: the logger used by the wrapper and used (as appropriate) for client construction/capture logging.
 

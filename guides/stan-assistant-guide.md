@@ -9,7 +9,7 @@ This guide is a compact, implementation-synced reference for STAN assistants int
 ## What this package provides
 
 - Programmatic wrapper:
-  - `AwsSecretsManagerTools` (async factory via `AwsSecretsManagerTools.init(...)`)
+  - `AwsSecretsManagerTools` (construct directly via `new AwsSecretsManagerTools(...)`)
 - get-dotenv plugin (mounted under `aws`):
   - `secretsPlugin()` → `aws secrets pull|push|delete`
 - Shipped CLI (get-dotenv host embedding the plugin):
@@ -56,7 +56,7 @@ Initialize tools (recommended):
 ```ts
 import { AwsSecretsManagerTools } from '@karmaniverous/aws-secrets-manager-tools';
 
-const tools = await AwsSecretsManagerTools.init({
+const tools = new AwsSecretsManagerTools({
   clientConfig: { region: 'us-east-1', logger: console },
   xray: 'auto',
 });

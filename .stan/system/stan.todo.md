@@ -2,7 +2,7 @@
 
 ## Next up
 
-- Run `npm run lint`, `npm run test`, `npm run typecheck`, and `npm run build` to validate the aws-xray-tools refactor.
+- Run `npm run lint`, `npm run test`, `npm run typecheck`, and `npm run build` to validate the AwsSecretsManagerTools constructor refactor (sync X-Ray capture).
 - Run `npm run docs -- --emit none` to confirm the new TypeDoc guides render cleanly.
 - Consider publishing a first release once documentation is finalized.
 
@@ -48,3 +48,4 @@
 - Use dotenvExpand for --secret-name expansion in aws secrets commands.
 - Refactor AwsSecretsManagerTools to use get-dotenv Logger.
 - Refactor X-Ray capture to use @karmaniverous/aws-xray-tools and remove redundant local implementation; fix STAN imports to use node_modules sources.
+- Refactored AwsSecretsManagerTools to use a public constructor (removed async init) now that aws-xray-tools capture is synchronous.

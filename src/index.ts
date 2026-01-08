@@ -12,6 +12,6 @@
 
 export {
   AwsSecretsManagerTools,
-  type AwsSecretsManagerToolsInitOptions,
+  type AwsSecretsManagerToolsOptions,
 } from './secretsManager/AwsSecretsManagerTools';
 export { secretsPlugin } from './secretsPlugin/secretsPlugin';

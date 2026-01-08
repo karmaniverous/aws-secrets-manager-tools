@@ -69,7 +69,7 @@ export const registerDeleteCommand = ({
       const recoveryWindowInDays = toNumber(opts.recoveryWindowDays);
 
       const region = getAwsRegion(ctx);
-      const tools = await AwsSecretsManagerTools.init({
+      const tools = new AwsSecretsManagerTools({
         clientConfig: region
           ? { region, logger: sdkLogger }
           : { logger: sdkLogger },

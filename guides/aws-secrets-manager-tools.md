@@ -38,14 +38,14 @@ The canonical type is:
 export type ProcessEnv = ProcessEnv;
 ```
 
-## Initialize once: `AwsSecretsManagerTools.init(...)`
+## Initialize once: `new AwsSecretsManagerTools(...)`
 
 Create a configured instance (recommended usage):
 
 ```ts
 import { AwsSecretsManagerTools } from '@karmaniverous/aws-secrets-manager-tools';
 
-const tools = await AwsSecretsManagerTools.init({
+const tools = new AwsSecretsManagerTools({
   clientConfig: {
     region: 'us-east-1',
     logger: console,
@@ -56,7 +56,7 @@ const tools = await AwsSecretsManagerTools.init({
 
 ### Init options
 
-`AwsSecretsManagerTools.init({ ... })` accepts:
+`new AwsSecretsManagerTools({ ... })` accepts:
 
 - `clientConfig?: SecretsManagerClientConfig`
   - Any AWS SDK v3 Secrets Manager client configuration (region, credentials, retry options, etc.).
@@ -64,7 +64,8 @@ const tools = await AwsSecretsManagerTools.init({
 - `xray?: 'auto' | 'on' | 'off'`
   - `'auto'` (default): enable only when `AWS_XRAY_DAEMON_ADDRESS` is set.
   - `'on'`: force capture (requires `AWS_XRAY_DAEMON_ADDRESS` and `aws-xray-sdk`).
-  - `'off'`: never enable capture.
+  - `'off'`: never enable capture.
+
 ### Observability and diagnostics
 
 The instance exposes a few helpful properties:
@@ -82,7 +83,7 @@ When you need AWS Secrets Manager APIs that aren’t wrapped by this package, us
 import { ListSecretsCommand } from '@aws-sdk/client-secrets-manager';
 import { AwsSecretsManagerTools } from '@karmaniverous/aws-secrets-manager-tools';
 
-const tools = await AwsSecretsManagerTools.init({
+const tools = new AwsSecretsManagerTools({
   clientConfig: { region: 'us-east-1', logger: console },
 });
 

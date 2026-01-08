@@ -32,7 +32,7 @@ This package is ESM-only (Node >= 20).
 ```ts
 import { AwsSecretsManagerTools } from '@karmaniverous/aws-secrets-manager-tools';
 
-const tools = await AwsSecretsManagerTools.init({
+const tools = new AwsSecretsManagerTools({
   clientConfig: { region: 'us-east-1', logger: console },
   xray: 'auto',
 });
