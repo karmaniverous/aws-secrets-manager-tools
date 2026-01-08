@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "@aws-sdk/client-secrets-manager": "^3.965.0",
-    "@karmaniverous/aws-xray-tools": "^0.1.0",
+    "@karmaniverous/aws-xray-tools": "^0.2.0",
     "@karmaniverous/get-dotenv": "^7.0.1"
   },
   "peerDependenciesMeta": {
