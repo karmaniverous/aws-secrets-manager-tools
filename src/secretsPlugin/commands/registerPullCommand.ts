@@ -154,7 +154,7 @@ export const registerPullCommand = ({
               ...editCommon,
               scope: 'env',
               env: requireString(
-                bag.env ?? bag.defaultEnv,
+                bag.env,
                 'env is required (use --env or defaultEnv).',
               ),
             })
