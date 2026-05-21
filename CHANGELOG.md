@@ -2,7 +2,13 @@
 
 All notable changes to this project will be documented in this file. Dates are displayed in UTC.
 
+#### [0.2.2](https://github.com/karmaniverous/aws-secrets-manager-tools/compare/0.2.1...0.2.2)
+
+- updated getdotenv [`8a76d0a`](https://github.com/karmaniverous/aws-secrets-manager-tools/commit/8a76d0aba722488ec97a4565d4ec6d477a200ba1)
+
 #### [0.2.1](https://github.com/karmaniverous/aws-secrets-manager-tools/compare/0.2.0...0.2.1)
+
+> 21 May 2026
 
 - chore: move docs generation to GHA workflow [`#7`](https://github.com/karmaniverous/aws-secrets-manager-tools/pull/7)
 - fix: remove obsolete defaultEnv cascade from pull command [`#6`](https://github.com/karmaniverous/aws-secrets-manager-tools/pull/6)
@@ -10,6 +16,7 @@ All notable changes to this project will be documented in this file. Dates are d
 - chore: add npm-pack-check CI workflow [`#2`](https://github.com/karmaniverous/aws-secrets-manager-tools/pull/2)
 - fix: remove obsolete bag.env ?? bag.defaultEnv cascade [`#5`](https://github.com/karmaniverous/aws-secrets-manager-tools/issues/5)
 - updated getdotenv [`f7dfc95`](https://github.com/karmaniverous/aws-secrets-manager-tools/commit/f7dfc9576d9d3efe12648de6e8e63d5ee36f07cf)
+- chore: release v0.2.1 [`2f78913`](https://github.com/karmaniverous/aws-secrets-manager-tools/commit/2f78913169cd7e96e9bd93544677abf03afbe005)
 - chore: add npm publish safety net (.npmignore + gitignore *.local) [`5d655fe`](https://github.com/karmaniverous/aws-secrets-manager-tools/commit/5d655fe9221a26ea85fd7cf6a330020029f8c30c)
 
 #### [0.2.0](https://github.com/karmaniverous/aws-secrets-manager-tools/compare/0.1.1...0.2.0)
