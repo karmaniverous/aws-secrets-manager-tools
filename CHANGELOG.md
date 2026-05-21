@@ -2,9 +2,22 @@
 
 All notable changes to this project will be documented in this file. Dates are displayed in UTC.
 
+#### [0.2.1](https://github.com/karmaniverous/aws-secrets-manager-tools/compare/0.2.0...0.2.1)
+
+- chore: move docs generation to GHA workflow [`#7`](https://github.com/karmaniverous/aws-secrets-manager-tools/pull/7)
+- fix: remove obsolete defaultEnv cascade from pull command [`#6`](https://github.com/karmaniverous/aws-secrets-manager-tools/pull/6)
+- chore: move changelog generation to after:bump hook [`#3`](https://github.com/karmaniverous/aws-secrets-manager-tools/pull/3)
+- chore: add npm-pack-check CI workflow [`#2`](https://github.com/karmaniverous/aws-secrets-manager-tools/pull/2)
+- fix: remove obsolete bag.env ?? bag.defaultEnv cascade [`#5`](https://github.com/karmaniverous/aws-secrets-manager-tools/issues/5)
+- updated getdotenv [`f7dfc95`](https://github.com/karmaniverous/aws-secrets-manager-tools/commit/f7dfc9576d9d3efe12648de6e8e63d5ee36f07cf)
+- chore: add npm publish safety net (.npmignore + gitignore *.local) [`5d655fe`](https://github.com/karmaniverous/aws-secrets-manager-tools/commit/5d655fe9221a26ea85fd7cf6a330020029f8c30c)
+
 #### [0.2.0](https://github.com/karmaniverous/aws-secrets-manager-tools/compare/0.1.1...0.2.0)
 
+> 9 January 2026
+
 - Use dotenvExpand for secret name expansion [`383a142`](https://github.com/karmaniverous/aws-secrets-manager-tools/commit/383a142fb443d511a4d27f46ea42570558d80d19)
+- chore: release v0.2.0 [`f78fb52`](https://github.com/karmaniverous/aws-secrets-manager-tools/commit/f78fb527d969efafa54957ca9d04cbaf79b24107)
 - imports [`0b0b108`](https://github.com/karmaniverous/aws-secrets-manager-tools/commit/0b0b108c895ade06976bc00bdb404c541503b30d)
 - Refactor AwsSecretsManagerTools constructor [`ccfe1ff`](https://github.com/karmaniverous/aws-secrets-manager-tools/commit/ccfe1ff19f9360e2b7ba35ea6459241b943b5fdf)
 - refactor: adopt aws-xray-tools [`f1229d5`](https://github.com/karmaniverous/aws-secrets-manager-tools/commit/f1229d56fddf22ed77388a7e444142187b2d5733)
