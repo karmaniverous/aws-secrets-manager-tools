@@ -2,8 +2,18 @@
 
 All notable changes to this project will be documented in this file. Dates are displayed in UTC.
 
+#### [0.2.3](https://github.com/karmaniverous/aws-secrets-manager-tools/compare/0.2.2...0.2.3)
+
+- chore: update dependencies [`#9`](https://github.com/karmaniverous/aws-secrets-manager-tools/pull/9)
+- cleanup [`9fe8c08`](https://github.com/karmaniverous/aws-secrets-manager-tools/commit/9fe8c08730c9fa49e8f6f87e30ee3c68703918b6)
+- chore: add copilot review instructions [`13c8c38`](https://github.com/karmaniverous/aws-secrets-manager-tools/commit/13c8c386b2083d3661b7302d029d0fec0ec37e20)
+- eliminated sync workflow [`62598bb`](https://github.com/karmaniverous/aws-secrets-manager-tools/commit/62598bbca3c0c163cfe6dd9d465dac6a1de4e4b5)
+
 #### [0.2.2](https://github.com/karmaniverous/aws-secrets-manager-tools/compare/0.2.1...0.2.2)
 
+> 21 May 2026
+
+- chore: release v0.2.2 [`3c95d44`](https://github.com/karmaniverous/aws-secrets-manager-tools/commit/3c95d44b0df8ba33dfafc34d5a0074d497fdd375)
 - updated getdotenv [`8a76d0a`](https://github.com/karmaniverous/aws-secrets-manager-tools/commit/8a76d0aba722488ec97a4565d4ec6d477a200ba1)
 
 #### [0.2.1](https://github.com/karmaniverous/aws-secrets-manager-tools/compare/0.2.0...0.2.1)
