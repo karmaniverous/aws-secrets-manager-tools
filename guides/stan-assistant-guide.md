@@ -18,10 +18,8 @@ This guide is a compact, implementation-synced reference for STAN assistants int
 ## Public API (imports)
 
 ```ts
-import {
-  AwsSecretsManagerTools,
-  secretsPlugin,
-} from '@karmaniverous/aws-secrets-manager-tools';
+import { AwsSecretsManagerTools } from '@karmaniverous/aws-secrets-manager-tools';
+import { secretsPlugin } from '@karmaniverous/aws-secrets-manager-tools/get-dotenv';
 ```
 
 ## Core data model: “env-map” secrets
@@ -38,10 +36,10 @@ Rules:
 - When decoding, `null` is treated as `undefined` (because JSON can’t represent `undefined`).
 - Binary secrets (`SecretBinary`) are not supported by the wrapper.
 
-The canonical payload type used by this wrapper is get-dotenv’s `ProcessEnv`:
+The canonical payload type is exported locally by this package, keeping the main entry independent of get-dotenv:
 
 ```ts
-import type { ProcessEnv } from '@karmaniverous/get-dotenv';
+import type { ProcessEnv } from '@karmaniverous/aws-secrets-manager-tools';
 ```
 
 ## Programmatic API: AwsSecretsManagerTools
@@ -114,10 +112,11 @@ Mount it under `aws` (the parent aws plugin is responsible for AWS auth/session 
 import { createCli } from '@karmaniverous/get-dotenv/cli';
 import { awsPlugin } from '@karmaniverous/get-dotenv/plugins';
 
-import { secretsPlugin } from '@karmaniverous/aws-secrets-manager-tools';
+import { secretsPlugin } from '@karmaniverous/aws-secrets-manager-tools/get-dotenv';
 
 await createCli({
   alias: 'toolbox',
+  importMetaUrl: import.meta.url,
   compose: (program) => program.use(awsPlugin().use(secretsPlugin())),
 })();
 ```

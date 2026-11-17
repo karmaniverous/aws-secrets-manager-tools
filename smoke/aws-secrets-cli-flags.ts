@@ -33,7 +33,12 @@ const main = async (): Promise<void> => {
 
   const repoRoot = await findRepoRoot(process.cwd());
   const smokeEnv = await loadSmokeEnv(repoRoot);
-  const profile = smokeEnv.SMOKE_AWS_PROFILE ?? 'JGS-SSO';
+  const profile = smokeEnv.SMOKE_AWS_PROFILE;
+  if (!profile) {
+    throw new Error(
+      'SMOKE_AWS_PROFILE is missing; set it in smoke/.env.local.',
+    );
+  }
   const keepArtifacts = shouldKeepArtifacts(smokeEnv);
   const secretId = makeSecretId();
   console.log(`smoke:flags: profile=${profile} secretId=${secretId}`);

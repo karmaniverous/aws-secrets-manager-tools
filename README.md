@@ -8,7 +8,7 @@ This package provides:
 
 - A tools-style wrapper that owns AWS client setup (including optional AWS X-Ray capture):
   - `AwsSecretsManagerTools`
-- A get-dotenv plugin intended to be mounted under `aws`:
+- An optional get-dotenv plugin, exported from the `/get-dotenv` subpath and intended to be mounted under `aws`:
   - `secretsPlugin()` → `aws secrets pull|push|delete`
 - A CLI embedding get-dotenv with the secrets plugin:
   - `aws-secrets-manager-tools`
@@ -25,7 +25,13 @@ This package provides:
 npm i @karmaniverous/aws-secrets-manager-tools
 ```
 
-This package is ESM-only (Node >= 20).
+For the plugin or standalone CLI, also install the optional peer:
+
+```bash
+npm i -D @karmaniverous/get-dotenv@^8.0.0
+```
+
+The programmatic package root does not load get-dotenv. This package is ESM-only (Node >= 22.12.0).
 
 ## Quick start (programmatic)
 
@@ -44,6 +50,8 @@ await tools.upsertEnvSecret({ secretId: 'my-app/dev', value: current });
 When you need AWS functionality not wrapped by this package, use the fully configured AWS SDK v3 client at `tools.client` (see the [programmatic guide](guides/aws-secrets-manager-tools.md) for examples).
 
 ## Quick start (CLI)
+
+The bin prints installation instructions and exits with status 1 when the optional get-dotenv peer is absent.
 
 ```bash
 aws-secrets-manager-tools --env dev aws secrets pull --secret-name '$STACK_NAME'
