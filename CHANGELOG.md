@@ -2,11 +2,23 @@
 
 All notable changes to this project will be documented in this file. Dates are displayed in UTC.
 
+#### [0.3.0](https://github.com/karmaniverous/aws-secrets-manager-tools/compare/0.2.3...0.3.0)
+
+- [GH-8] Support get-dotenv 8 package contract [`#13`](https://github.com/karmaniverous/aws-secrets-manager-tools/pull/13)
+- [GH-8] feat: support get-dotenv 8 package contract [`e487905`](https://github.com/karmaniverous/aws-secrets-manager-tools/commit/e4879057837783abda49803a9d8cdebc1ecf1e88)
+- [GH-8] chore(deps): approve dependency install scripts [`0dd6c47`](https://github.com/karmaniverous/aws-secrets-manager-tools/commit/0dd6c4782bdc58b9a293353570444315ab470a97)
+- [GH-8] fix: complete S18 finishing review [`8e102e7`](https://github.com/karmaniverous/aws-secrets-manager-tools/commit/8e102e73005cbfa803a7d937d53cb253b35099bb)
+- [GH-8] chore(deps): require released get-dotenv ^8.0.0 [`d14261d`](https://github.com/karmaniverous/aws-secrets-manager-tools/commit/d14261d19ce1e2fab3ab7c681d22f3dd6b5b719c)
+- [GH-8] updated dependencies [`78fe37e`](https://github.com/karmaniverous/aws-secrets-manager-tools/commit/78fe37efa7449db627b0e2991c92a04d09631f1e)
+
 #### [0.2.3](https://github.com/karmaniverous/aws-secrets-manager-tools/compare/0.2.2...0.2.3)
+
+> 15 July 2026
 
 - chore: update dependencies [`#9`](https://github.com/karmaniverous/aws-secrets-manager-tools/pull/9)
 - cleanup [`9fe8c08`](https://github.com/karmaniverous/aws-secrets-manager-tools/commit/9fe8c08730c9fa49e8f6f87e30ee3c68703918b6)
 - chore: add copilot review instructions [`13c8c38`](https://github.com/karmaniverous/aws-secrets-manager-tools/commit/13c8c386b2083d3661b7302d029d0fec0ec37e20)
+- chore: release v0.2.3 [`bdf37f8`](https://github.com/karmaniverous/aws-secrets-manager-tools/commit/bdf37f8b1dfab1fa35fa2e0e3aaf4f55b991e308)
 - eliminated sync workflow [`62598bb`](https://github.com/karmaniverous/aws-secrets-manager-tools/commit/62598bbca3c0c163cfe6dd9d465dac6a1de4e4b5)
 
 #### [0.2.2](https://github.com/karmaniverous/aws-secrets-manager-tools/compare/0.2.1...0.2.2)
