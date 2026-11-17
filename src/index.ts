@@ -6,12 +6,13 @@
 
 /**
  * Requirements addressed:
- * - Export a public `AwsSecretsManagerTools`.
- * - Export the get-dotenv `secretsPlugin` for mounting under `aws`.
+ * - Export a public `AwsSecretsManagerTools` without loading get-dotenv.
+ * - Export local public `Logger` and `ProcessEnv` contracts.
  */
 
+export { assertLogger, type Logger } from './logger';
+export type { ProcessEnv } from './processEnv';
 export {
   AwsSecretsManagerTools,
   type AwsSecretsManagerToolsOptions,
 } from './secretsManager/AwsSecretsManagerTools';
-export { secretsPlugin } from './secretsPlugin/secretsPlugin';

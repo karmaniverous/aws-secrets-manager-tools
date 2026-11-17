@@ -6,17 +6,16 @@ These are end-to-end smoke tests that hit a real AWS account and exercise:
 - Config overlay discovery + plugin config interpolation
 - `aws secrets push|pull|delete` behavior, including template bootstrap for dotenv edits
 
-## Configure (optional)
+## Configure
 
-Defaults are committed in `smoke/.env`:
+Safe defaults are committed in `smoke/.env`:
 
-- `SMOKE_AWS_PROFILE=JGS-SSO`
 - `SMOKE_KEEP_ARTIFACTS=0`
 
-To override locally:
+Configure the AWS profile locally:
 
 1. Copy `smoke/.env.local.template` to `smoke/.env.local`
-2. Edit values (this file is gitignored)
+2. Set `SMOKE_AWS_PROFILE` to an authenticated profile (this file is gitignored)
 
 ## Run
 

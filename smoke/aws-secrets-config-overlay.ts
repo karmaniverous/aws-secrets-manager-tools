@@ -76,7 +76,9 @@ const withConfigOverlay = async <T>(
 
     // Ensure the spawned CLI has the env vars required for interpolation.
     if (!smokeEnv.SMOKE_AWS_PROFILE) {
-      throw new Error('SMOKE_AWS_PROFILE is missing; check smoke/.env.');
+      throw new Error(
+        'SMOKE_AWS_PROFILE is missing; set it in smoke/.env.local.',
+      );
     }
 
     return await fn();

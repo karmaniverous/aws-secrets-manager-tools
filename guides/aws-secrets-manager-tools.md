@@ -14,7 +14,7 @@ If you’re looking for the CLI or plugin behavior instead, see the [aws secrets
 npm i @karmaniverous/aws-secrets-manager-tools
 ```
 
-This package is ESM-only (Node >= 20).
+This package is ESM-only (Node >= 22.12.0). The package root works without the optional get-dotenv peer installed.
 
 ```ts
 import { AwsSecretsManagerTools } from '@karmaniverous/aws-secrets-manager-tools';
@@ -32,10 +32,10 @@ This library treats `SecretString` as JSON with the following shape:
 - When reading, `null` is decoded as `undefined` (because JSON cannot represent `undefined`).
 - Binary secrets (`SecretBinary`) are not supported by this wrapper.
 
-The canonical payload type used by this wrapper is get-dotenv’s `ProcessEnv`:
+The canonical payload type is this package’s local `ProcessEnv`; the package root does not depend on get-dotenv:
 
 ```ts
-import type { ProcessEnv } from '@karmaniverous/get-dotenv';
+import type { ProcessEnv } from '@karmaniverous/aws-secrets-manager-tools';
 ```
 
 ## Initialize once: `new AwsSecretsManagerTools(...)`

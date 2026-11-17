@@ -28,12 +28,9 @@ import {
   type XrayMode,
   type XrayState,
 } from '@karmaniverous/aws-xray-tools';
-import {
-  assertLogger,
-  type Logger,
-  type ProcessEnv,
-} from '@karmaniverous/get-dotenv';
 
+import { assertLogger, type Logger } from '../logger';
+import type { ProcessEnv } from '../processEnv';
 import { isResourceNotFoundError } from './awsError';
 
 /** Options for {@link AwsSecretsManagerTools} construction. */

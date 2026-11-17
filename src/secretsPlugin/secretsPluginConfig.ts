@@ -6,7 +6,7 @@
  * - include/exclude are mutually exclusive; unknown keys are ignored at filter time.
  */
 
-import { z } from '@karmaniverous/get-dotenv/cliHost';
+import { z } from 'zod';
 
 export const secretsPluginConfigSchema = z.object({
   /**
