@@ -109,10 +109,10 @@ try {
       '--help',
     ]);
     const expectedHint = [
-      'aws-secrets-manager-tools needs @karmaniverous/get-dotenv ^8.0.0-0. Install it:',
-      '  local:  npm i -D @karmaniverous/get-dotenv@^8.0.0-0',
-      '  global: npm i -g @karmaniverous/get-dotenv@^8.0.0-0',
-      '  npx:    npx -p @karmaniverous/get-dotenv@^8.0.0-0 -p @karmaniverous/aws-secrets-manager-tools aws-secrets-manager-tools',
+      'aws-secrets-manager-tools needs @karmaniverous/get-dotenv ^8.0.0. Install it:',
+      '  local:  npm i -D @karmaniverous/get-dotenv@^8.0.0',
+      '  global: npm i -g @karmaniverous/get-dotenv@^8.0.0',
+      '  npx:    npx -p @karmaniverous/get-dotenv@^8.0.0 -p @karmaniverous/aws-secrets-manager-tools aws-secrets-manager-tools',
     ].join('\n');
     if (
       bin.status !== 1 ||

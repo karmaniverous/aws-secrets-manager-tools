@@ -28,7 +28,7 @@ npm i @karmaniverous/aws-secrets-manager-tools
 For the plugin or standalone CLI, also install the optional peer:
 
 ```bash
-npm i -D @karmaniverous/get-dotenv@^8.0.0-0
+npm i -D @karmaniverous/get-dotenv@^8.0.0
 ```
 
 The programmatic package root does not load get-dotenv. This package is ESM-only (Node >= 22.12.0).
