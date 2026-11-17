@@ -52,7 +52,7 @@
     "prettier": "^3.10.1",
     "release-it": "^21.1.2",
     "rimraf": "^6.1.4",
-    "rollup": "^4.68.4",
+    "rollup": "^4.68.5",
     "rollup-plugin-dts": "^6.5.1",
     "tslib": "^2.9.1",
     "tsx": "^4.23.15",
@@ -168,5 +168,9 @@
   "version": "0.2.3",
   "peerDependencies": {
     "@karmaniverous/get-dotenv": "^8.0.0-0"
+  },
+  "allowScripts": {
+    "esbuild": true,
+    "lefthook": true
   }
 }
