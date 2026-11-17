@@ -64,6 +64,9 @@ jobs:
       - name: Packed strict TypeScript consumer
         run: npm run verify:types
 
+      - name: Targeted mutation checks
+        run: npm run verify:mutations
+
       - name: Built-entry smoke test
         run: npm run verify:smoke
 

@@ -8,6 +8,7 @@
 
 import { z } from 'zod';
 
+/** Schema for configuration under the realized `aws/secrets` plugin path. */
 export const secretsPluginConfigSchema = z.object({
   /**
    * Default secret name for all `aws secrets` subcommands.
@@ -75,6 +76,7 @@ export const secretsPluginConfigSchema = z.object({
     .optional(),
 });
 
+/** Validated configuration for the get-dotenv Secrets Manager plugin. */
 export type SecretsPluginConfig = z.output<typeof secretsPluginConfigSchema>;
 
 export const resolveIncludeExclude = ({

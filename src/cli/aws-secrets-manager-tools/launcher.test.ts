@@ -52,6 +52,28 @@ describe('launch', () => {
     expect(io.exit).toHaveBeenCalledExactlyOnceWith(1);
   });
 
+  it('uses stderr and process exit for the default launcher IO', async () => {
+    const exitError = new Error('process exited');
+    const error = vi
+      .spyOn(console, 'error')
+      .mockImplementation(() => undefined);
+    const exit = vi.spyOn(process, 'exit').mockImplementation(() => {
+      throw exitError;
+    });
+
+    try {
+      await expect(
+        launch(() => Promise.reject(missingGetDotenv), names),
+      ).rejects.toBe(exitError);
+
+      expect(error).toHaveBeenCalledExactlyOnceWith(expectedHint);
+      expect(exit).toHaveBeenCalledExactlyOnceWith(1);
+    } finally {
+      error.mockRestore();
+      exit.mockRestore();
+    }
+  });
+
   it('runs the CLI when get-dotenv is present', async () => {
     const io = { error: vi.fn(), exit: vi.fn() };
     const run = vi.fn(() => Promise.resolve());

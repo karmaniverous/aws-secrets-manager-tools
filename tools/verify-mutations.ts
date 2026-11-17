@@ -7,7 +7,8 @@ import { spawnSync } from 'node:child_process';
 import { readFileSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 
-const npm = process.platform === 'win32' ? 'npm.cmd' : 'npm';
+const npmCli = process.env.npm_execpath;
+if (!npmCli) throw new Error('npm_execpath is required');
 
 type Mutation = {
   name: string;
@@ -36,12 +37,42 @@ const mutations: Mutation[] = [
     ],
   },
   {
+    name: 'launcher exits with failure status',
+    file: 'src/cli/aws-secrets-manager-tools/launcher.ts',
+    original: '    io.exit(1);\n',
+    mutant: '    io.exit(0);\n',
+    commands: [
+      ['test', '--', 'src/cli/aws-secrets-manager-tools/launcher.test.ts'],
+    ],
+  },
+  {
     name: 'host importMetaUrl is forwarded',
     file: 'src/cli/aws-secrets-manager-tools/cliOptions.ts',
     original: '  importMetaUrl,\n',
     mutant: "  importMetaUrl: 'file:///wrong-host.js',\n",
     commands: [
       ['test', '--', 'src/cli/aws-secrets-manager-tools/cliOptions.test.ts'],
+    ],
+  },
+  {
+    name: 'main entry stays independent of get-dotenv',
+    file: 'src/index.ts',
+    original: "export type { ProcessEnv } from './processEnv';\n",
+    mutant:
+      "export type { ProcessEnv } from './processEnv';\nexport { secretsPlugin } from './secretsPlugin/secretsPlugin';\n",
+    commands: [
+      ['run', 'build'],
+      ['run', 'verify:package'],
+    ],
+  },
+  {
+    name: 'main declaration uses the local ProcessEnv type',
+    file: 'src/secretsManager/AwsSecretsManagerTools.ts',
+    original: "import type { ProcessEnv } from '../processEnv';",
+    mutant: "import type { ProcessEnv } from '@karmaniverous/get-dotenv';",
+    commands: [
+      ['run', 'build'],
+      ['run', 'verify:types'],
     ],
   },
   {
@@ -70,35 +101,54 @@ const mutations: Mutation[] = [
   },
 ];
 
-const run = (args: string[]): number =>
-  spawnSync(npm, args, {
+const run = (args: string[]): number => {
+  const result = spawnSync(process.execPath, [npmCli, ...args], {
     cwd: resolve(import.meta.dirname, '..'),
     encoding: 'utf8',
     stdio: 'pipe',
-  }).status ?? 1;
-
-for (const mutation of mutations) {
-  const path = resolve(import.meta.dirname, '..', mutation.file);
-  const source = readFileSync(path, 'utf8');
-  if (!source.includes(mutation.original)) {
-    throw new Error(`mutation source not found: ${mutation.name}`);
+  });
+  if (result.error) throw result.error;
+  if (result.status === null) {
+    throw new Error(`npm ${args.join(' ')} ended without an exit status`);
   }
+  return result.status;
+};
 
-  let killed = false;
-  try {
-    writeFileSync(path, source.replace(mutation.original, mutation.mutant));
-    for (const command of mutation.commands) {
-      if (run(command) !== 0) {
-        killed = true;
-        break;
-      }
+let mutationError: unknown;
+try {
+  for (const mutation of mutations) {
+    const path = resolve(import.meta.dirname, '..', mutation.file);
+    const source = readFileSync(path, 'utf8');
+    if (!source.includes(mutation.original)) {
+      throw new Error(`mutation source not found: ${mutation.name}`);
     }
-  } finally {
-    writeFileSync(path, source);
-  }
 
-  if (!killed) throw new Error(`survived mutation: ${mutation.name}`);
-  console.log(`killed: ${mutation.name}`);
+    let killed = false;
+    try {
+      writeFileSync(path, source.replace(mutation.original, mutation.mutant));
+      for (const command of mutation.commands) {
+        if (run(command) !== 0) {
+          killed = true;
+          break;
+        }
+      }
+    } finally {
+      writeFileSync(path, source);
+    }
+
+    if (!killed) throw new Error(`survived mutation: ${mutation.name}`);
+    console.log(`killed: ${mutation.name}`);
+  }
+} catch (error) {
+  mutationError = error;
+}
+
+if (run(['run', 'build']) !== 0 || run(['run', 'verify:bundle']) !== 0) {
+  throw new Error('failed to restore the clean built bundle after mutations');
+}
+if (mutationError instanceof Error) throw mutationError;
+if (typeof mutationError !== 'undefined') {
+  throw new Error('mutation runner failed', { cause: mutationError });
 }
 
 console.log(

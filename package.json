@@ -119,6 +119,7 @@
         "npm run verify:bundle",
         "npm run verify:package",
         "npm run verify:types",
+        "npm run verify:mutations",
         "npm run verify:smoke",
         "npm run pack:dry"
       ],
